@@ -69,6 +69,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation ("androidx.navigation:navigation-compose:2.7.5")
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation ("androidx.compose.material:material")
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
@@ -76,5 +77,10 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:5.0.0-alpha.1")
     implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.1")
     implementation ("com.google.code.gson:gson:2.8.9")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
 }
