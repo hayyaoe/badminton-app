@@ -37,7 +37,7 @@ fun CustomButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(Color(0xFF5DA119), Color(0xFFF9F9F9)),
-        modifier = modifier.height(50.dp).fillMaxWidth().padding(horizontal = 50.dp),
+        modifier = modifier.height(50.dp).fillMaxWidth().padding(horizontal = 24.dp),
         shape = RoundedCornerShape(14.dp),
     ) {
         Text(

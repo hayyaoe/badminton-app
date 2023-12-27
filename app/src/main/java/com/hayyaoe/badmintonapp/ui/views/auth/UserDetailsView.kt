@@ -126,7 +126,7 @@ fun UserDetailsView (){
                     KeyboardType.Password
                 )
 
-                CustomButton({}, "REGISTER", Modifier.padding(vertical =60.dp))
+                CustomButton({}, "REGISTER", Modifier.padding(vertical =60.dp, horizontal = 26.dp))
             }
         }
     }

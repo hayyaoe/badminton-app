@@ -133,7 +133,7 @@ fun RegisterView(){
                     options = skillLevels,
                     label = "Skill Level"
                 )
-                CustomButton({}, "REGISTER", Modifier.padding(vertical =20.dp))
+                CustomButton({}, "REGISTER", Modifier.padding(vertical =20.dp, horizontal = 26.dp))
             }
         }
     }

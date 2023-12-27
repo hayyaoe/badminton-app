@@ -93,7 +93,7 @@ fun LoginView(){
                         onValueChange = { password = it },
                         label = "Password"
                     )
-                    CustomButton(onClick = { }, content = "LOGIN", Modifier.padding(top = 250.dp))
+                    CustomButton(onClick = { }, content = "LOGIN", Modifier.padding(top = 250.dp,start = 26.dp, end =26.dp))
 
             }
         }
