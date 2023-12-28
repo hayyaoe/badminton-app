@@ -14,4 +14,8 @@
       <option value="C:\Users\YOGA72~1\AppData\Local\Temp\overlay6241169683646259710" />
     </paths>
   </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
 </module>
