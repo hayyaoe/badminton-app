@@ -25,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -41,7 +43,7 @@ fun HomeView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp)
+            .padding(32.dp, 40.dp, 32.dp, 0.dp)
     ) {
         Row(
             modifier = Modifier
@@ -143,16 +145,17 @@ fun MenuCard(
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            brush = Brush.verticalGradient(
+                        .drawWithCache {
+                            val gradient = Brush.verticalGradient(
                                 colors = listOf(Color.Transparent, Color.Black),
-                                startY = 0f,
-                                endY = Float.POSITIVE_INFINITY
+                                startY = size.height / 3,
+                                endY = size.height
                             )
-                        )
-                        .graphicsLayer(
-                            translationY = 0.3f // Adjust this value to control the gradient start position
-                        )
+                            onDrawWithContent {
+                                drawContent()
+                                drawRect(gradient, blendMode = BlendMode.Multiply)
+                            }
+                        }
                 )
                 Text(
                     text = text,
