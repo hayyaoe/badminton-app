@@ -1,6 +1,7 @@
 package com.hayyaoe.badmintonapp.ui.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,10 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,18 +37,18 @@ import androidx.compose.ui.unit.sp
 import com.hayyaoe.badmintonapp.R
 
 @Composable
-fun HomeView(){
-    Column (
+fun HomeView() {
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(4f)
@@ -67,7 +67,7 @@ fun HomeView(){
                 )
             }
 
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -96,7 +96,7 @@ fun HomeView(){
             }
         }
 
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
             item {
@@ -110,10 +110,10 @@ fun HomeView(){
 }
 
 @Composable
-fun MenuCard (
+fun MenuCard(
     image: Int,
     text: String
-){
+) {
     Button(
         onClick = {
             /*TODO*/
@@ -125,14 +125,14 @@ fun MenuCard (
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         shape = RoundedCornerShape(38.dp)
     ) {
-        Card (
+        Card(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(38.dp),
             elevation = CardDefaults.cardElevation(10.dp),
             colors = CardDefaults.cardColors(Color.Transparent)
         ) {
-            Box (
+            Box(
                 modifier = Modifier
                     .fillMaxWidth(),
                 contentAlignment = Alignment.BottomStart
@@ -143,19 +143,18 @@ fun MenuCard (
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .drawWithCache {
-                            val gradient = Brush.verticalGradient(
+                        .background(
+                            brush = Brush.verticalGradient(
                                 colors = listOf(Color.Transparent, Color.Black),
-                                startY = size.height / 3,
-                                endY = size.height
+                                startY = 0f,
+                                endY = Float.POSITIVE_INFINITY
                             )
-                            onDrawWithContent {
-                                drawContent()
-                                drawRect(gradient, blendMode = BlendMode.Multiply)
-                            }
-                        }
+                        )
+                        .graphicsLayer(
+                            translationY = 0.3f // Adjust this value to control the gradient start position
+                        )
                 )
-                Text (
+                Text(
                     text = text,
                     color = Color.White,
                     fontSize = 24.sp,
@@ -167,6 +166,7 @@ fun MenuCard (
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
