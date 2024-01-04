@@ -53,7 +53,7 @@ fun CustomDropdownMenuBox(
     isError: Boolean,
     modifier: Modifier = Modifier,
     label: String,
-    options : MutableList<String>
+    options : List<String>
 ) {
 
     Column (

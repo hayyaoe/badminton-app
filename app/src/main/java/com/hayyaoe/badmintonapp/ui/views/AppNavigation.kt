@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -14,4 +15,5 @@ sealed class Screen(val route: String, val icon: ImageVector, val label: String)
     object Favorite : Screen("favorite", Icons.Outlined.FavoriteBorder, "Search")
     object Shop : Screen("shop", Icons.Outlined.ShoppingCart, "Profile")
     object Account : Screen("account", Icons.Outlined.AccountCircle, "Settings")
+    object Register : Screen("register",Icons.Outlined.Settings,"Register")
 }

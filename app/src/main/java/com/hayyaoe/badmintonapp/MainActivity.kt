@@ -18,15 +18,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.hayyaoe.badmintonapp.data.DataStoreManager
+import com.hayyaoe.badmintonapp.ui.BadmintonAppRoute
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.BottomBar
 import com.hayyaoe.badmintonapp.ui.views.Screen
 import com.hayyaoe.badmintonapp.ui.views.TopBar
+import com.hayyaoe.badmintonapp.ui.views.auth.RegisterView
 import com.hayyaoe.badmintonapp.ui.views.find.FindMatchView
 import com.hayyaoe.badmintonapp.ui.views.nav.AccountScreen
 import com.hayyaoe.badmintonapp.ui.views.nav.FavoriteScreen
@@ -43,54 +47,54 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    StartScreen()
-                    HomeScreen()
+                    BadmintonAppRoute()
+//
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun StartScreen() {
-    val navController = navController()
-    Scaffold(
-//        topBar = {
-//            TopBar("", false)
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun StartScreen() {
+//    val navController = navController()
+//    Scaffold(
+////        topBar = {
+////            TopBar("", false)
+////        },
+//        content = {
+//            Column(
+//                modifier = Modifier
+//                    .padding(it),
+//            ) {
+//                NavHost(navController, startDestination = Screen.Register.route) {
+//                    composable(Screen.Home.route) { HomeScreen() }
+//                    composable(Screen.Favorite.route) { FavoriteScreen() }
+//                    composable(Screen.Shop.route) { ShopScreen() }
+//                    composable(Screen.Account.route) { AccountScreen() }
+//                }
+//            }
 //        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .padding(it),
-            ) {
-                NavHost(navController, startDestination = Screen.Home.route) {
-                    composable(Screen.Home.route) { HomeScreen() }
-                    composable(Screen.Favorite.route) { FavoriteScreen() }
-                    composable(Screen.Shop.route) { ShopScreen() }
-                    composable(Screen.Account.route) { AccountScreen() }
-                }
-            }
-        },
-        bottomBar = {
-            Box(
-                modifier = Modifier
-                    .shadow(elevation = 24.dp, ambientColor = Color.Black)
-            ){
-                BottomBar(navController)
-            }
-
-        }
-    )
-}
-
-fun AuthScreen(){
-
-}
-
-fun SplashScreen(){
-
-}
+//        bottomBar = {
+//            Box(
+//                modifier = Modifier
+//                    .shadow(elevation = 24.dp, ambientColor = Color.Black)
+//            ){
+//                BottomBar(navController)
+//            }
+//
+//        }
+//    )
+//}
+//
+//fun AuthScreen(){
+//
+//}
+//
+//fun SplashScreen(){
+//
+//}
 
 @Preview(
     showBackground = true,
@@ -110,7 +114,7 @@ fun Preview() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            StartScreen()
+            BadmintonAppRoute()
         }
     }
 }
