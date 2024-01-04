@@ -31,7 +31,8 @@ import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 fun CustomButton(
     onClick: () -> Unit,
     content: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isEnabled: Boolean
 ) {
 
     Button(
@@ -39,6 +40,7 @@ fun CustomButton(
         colors = ButtonDefaults.buttonColors(Color(0xFF5DA119), Color(0xFFF9F9F9)),
         modifier = modifier.height(50.dp).fillMaxWidth().padding(horizontal = 24.dp),
         shape = RoundedCornerShape(14.dp),
+        enabled = isEnabled
     ) {
         Text(
             text = content,
@@ -77,7 +79,7 @@ fun CustomButtonPreview(){
             color = MaterialTheme.colorScheme.background
         ) {
             var test by rememberSaveable { mutableStateOf("") }
-            CustomButton(onClick = { /*TODO*/ }, content = "LOGIN")
+            CustomButton(onClick = { /*TODO*/ }, content = "LOGIN", isEnabled = true)
         }
     }
 }

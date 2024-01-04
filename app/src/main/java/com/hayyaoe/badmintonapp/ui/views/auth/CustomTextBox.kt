@@ -31,6 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +50,9 @@ fun CustomTextBox(
         .fillMaxWidth()
         .padding(horizontal = 50.dp, 0.dp),
     imeAction: ImeAction = ImeAction.Next,
-    isError: Boolean = false
+    isError: Boolean = false,
+    isPassword: Boolean = false,
+    errorMessage: String
 
 ) {
 
@@ -65,7 +69,7 @@ fun CustomTextBox(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = modifier.height(50.dp),
+            modifier = modifier,
             shape = RoundedCornerShape(14.dp),
             maxLines = 1,
             keyboardOptions = KeyboardOptions(
@@ -75,14 +79,25 @@ fun CustomTextBox(
                 imeAction
             ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color(0xFF819171),
-                unfocusedBorderColor = if (isSystemInDarkTheme()) Color(0xFF4C4E49) else Color(0xFFC6CEBE),
+                focusedBorderColor = if (isSystemInDarkTheme()) Color(0xFFC6CEBE) else Color(0xFF819171),
+                unfocusedBorderColor = if (isSystemInDarkTheme()) Color(0xFFC6CEBE) else Color(0xFFC6CEBE),
                 textColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
             ),
             isError = isError,
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             textStyle = TextStyle(fontSize = 12.sp, fontFamily = poppins, color = Color.Black)
 
         )
+        if (isError){
+            Text(
+                text = errorMessage,
+                fontFamily = poppins,
+                fontSize = 12.sp,
+                color = Color.Red,
+                modifier = modifier.padding(start = 10.dp)
+            )
+        }
+
     }
 
 }
@@ -106,7 +121,7 @@ fun CustomTextBoxPreview(){
             color = MaterialTheme.colorScheme.background
         ) {
             var test by rememberSaveable { mutableStateOf("") }
-           CustomTextBox(value = test, onValueChange = {test= it}, label = "Test")
+           CustomTextBox(value = test, onValueChange = {test= it}, label = "Test", errorMessage = "Coba Error Nih")
         }
     }
 }

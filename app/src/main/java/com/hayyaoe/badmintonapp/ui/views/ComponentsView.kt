@@ -141,9 +141,9 @@ fun ComponentsPreview() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-//            AppTemplate()
+            AppTemplate()
             TopBar("", true ,rememberNavController())
-//            BottomBar(rememberNavController())
+            BottomBar(rememberNavController())
         }
     }
 }

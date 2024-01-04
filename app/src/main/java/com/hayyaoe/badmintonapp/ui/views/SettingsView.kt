@@ -3,6 +3,7 @@ package com.hayyaoe.badmintonapp.ui.view
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,8 +73,9 @@ fun SettingsView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFF1F1E1))
-            .padding (0.dp, 16.dp, 0.dp, 0.dp),
+            .background(color = Color(0xFFF1F1F1))
+            .padding (0.dp, 32.dp, 0.dp, 0.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -116,10 +120,36 @@ fun SettingsView() {
                     modifier = Modifier.padding(20.dp, 28.dp, 20.dp, 2.dp)
                 )
                 Text(
+                    text = "New Profile Picture",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(32.dp, 18.dp, 20.dp, 0.dp)
+                )
+                Button(
+                    onClick = {
+                        galleryLauncher.launch("image/*")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp, 4.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color(0xFF5DA119)
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(1.dp, Color(0xFF5DA119))
+                ) {
+                    Text(
+                        text = "Select",
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Right
+                    )
+                }
+                Text(
                     text = "City",
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(20.dp, 18.dp, 20.dp, 0.dp)
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(32.dp, 18.dp, 20.dp, 0.dp)
                 )
                 CustomTextField(
                     value = city,
@@ -136,8 +166,8 @@ fun SettingsView() {
                 Text(
                     text = "Region",
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp)
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
                 )
                 CustomTextField(
                     value = region,
@@ -154,8 +184,8 @@ fun SettingsView() {
                 Text(
                     text = "Phone",
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp)
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
                 )
                 CustomTextField(
                     value = phone,
@@ -172,8 +202,8 @@ fun SettingsView() {
                 Text(
                     text = "Other Contact",
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp)
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
                 )
                 CustomTextField(
                     value = otherContact,
@@ -190,8 +220,8 @@ fun SettingsView() {
                 Text(
                     text = "Password",
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(20.dp, 4.dp, 20.dp, 0.dp)
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
                 )
                 CustomTextField(
                     value = password,
@@ -237,6 +267,26 @@ fun CustomTextField(
         keyboardOptions = keyboardOptions,
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFFC6CEBE))
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ImageField(
+    value: String,
+    onValueChanged: (String) -> Unit,
+    text: String,
+    keyboardOptions: KeyboardOptions,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChanged,
+        label = { Text(text = text) },
+        keyboardOptions = keyboardOptions,
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(Color(0xFFC6CEBE))
     )
 }
