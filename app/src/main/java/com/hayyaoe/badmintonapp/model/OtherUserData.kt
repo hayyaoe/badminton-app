@@ -1,12 +1,15 @@
 package com.hayyaoe.badmintonapp.model
 
-data class UpdateUser(
+data class OtherUserData(
+    val `data`: List<OtherUser>
+)
+
+data class OtherUser(
     val contacts: String,
-    val email: String,
+    val id: Int,
     val location_id: Int,
-    var image_path: String?,
-    val password: String?,
     val phone_number: String,
+    val profile_path: String?,
     val rank: Int,
     val username: String
 )

@@ -1,9 +1,14 @@
 package com.hayyaoe.badmintonapp.viewmodel.auth
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -22,6 +27,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 sealed interface UserDetailUiState{
     data class Success(
@@ -36,6 +46,9 @@ class UserDetailViewModel : ViewModel() {
     var userDetailUiState: UserDetailUiState by mutableStateOf(UserDetailUiState.Loading)
     private val _uiState = MutableStateFlow(User())
     val uiState: StateFlow<User> = _uiState.asStateFlow()
+
+    private val _imageUploadResponse = MutableLiveData<String>()
+    val imageUploadResponse: LiveData<String> get() = _imageUploadResponse
 
     private lateinit var locations: List<Location>
     private val regions: MutableList<String> = mutableListOf() // Initialize the regions list
@@ -56,6 +69,21 @@ class UserDetailViewModel : ViewModel() {
                 Log.d("NetworkTest", e.message.toString())
                 userDetailUiState = UserDetailUiState.Error
             }
+        }
+    }
+
+
+    @SuppressLint("Recycle")
+    fun uploadImage(imageUri: Uri, context: Context){
+        viewModelScope.launch {
+            val inputStream = context.contentResolver.openInputStream(imageUri)
+            val requestFile = inputStream?.readBytes()?.toRequestBody("image/*".toMediaTypeOrNull())
+            val body = MultipartBody.Part.createFormData("image", "filename", requestFile!!)
+
+            val response = BadmintonContainer().badmintonRepositories.upload_picture(body)
+            Log.d("IMAGE PATH", response)
+            _imageUploadResponse.value = response
+            BadmintonContainer().badmintonRepositories.update_profile_picture(EMAIL,response)
         }
     }
 
@@ -91,7 +119,8 @@ class UserDetailViewModel : ViewModel() {
                         phone_number = phone,
                         contacts = contacts,
                         location_id = location_id,
-                        rank = userData.rank
+                        rank = userData.rank,
+                        image_path = if (_imageUploadResponse.value.isNullOrBlank()) null else _imageUploadResponse.value
                     )
                     BadmintonContainer().badmintonRepositories.update_user(user)
                     navController.navigate("Home"){

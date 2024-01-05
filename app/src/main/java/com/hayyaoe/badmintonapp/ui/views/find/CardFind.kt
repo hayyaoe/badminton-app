@@ -38,32 +38,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hayyaoe.badmintonapp.getResId
+import com.hayyaoe.badmintonapp.model.OtherUser
 import com.hayyaoe.badmintonapp.model.People
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
+import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardFindView(
-    _profilePicture: String,
+    _id : Int,
+    _rank: Int,
+    _profilePicture: String?,
     _name: String,
-    _location: String,
+    _location: Int,
     _phone: String,
     _instagram: String,
-    onCardClick: (People) -> Unit
+    onCardClick: (OtherUser) -> Unit,
+    findSpartnerViewModel: FindSpartnerViewModel
 ){
 
+    val loc = findSpartnerViewModel.getLocationById(_location)
     val profilePicture: Int = getResId(_profilePicture)
     val name: String = _name
-    val location: String = _location
+    val location: String = loc
     val phone: String = _phone
     val instagram: String = _instagram
 
     Card(
         onClick = {
             // Create a People object with relevant data
-            val person = People(_name, _profilePicture, _location, _phone, _instagram)
+            val person = OtherUser(username = _name,profile_path = _profilePicture, location_id = _location, phone_number = _phone, contacts =  _instagram, rank = _rank, id = _id)
             // Call the callback with the People object
             onCardClick(person)
         },
@@ -158,7 +165,7 @@ fun CardFindPreview() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            CardFindView("rafi", "Rafi Abhista Naya WP, Citraland UC", "WP, Citraland UC WP, Citraland UC WP, Citraland UC", "091234567890", "abhista_naya", {})
+            CardFindView(_id = 1, _rank = 200,"rafi", "Rafi Abhista Naya WP, Citraland UC", 1, "091234567890", "abhista_naya", {},viewModel())
         }
     }
 }

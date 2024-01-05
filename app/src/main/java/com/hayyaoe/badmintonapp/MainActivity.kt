@@ -31,10 +31,9 @@ import com.hayyaoe.badmintonapp.ui.views.BottomBar
 import com.hayyaoe.badmintonapp.ui.views.Screen
 import com.hayyaoe.badmintonapp.ui.views.TopBar
 import com.hayyaoe.badmintonapp.ui.views.auth.RegisterView
-import com.hayyaoe.badmintonapp.ui.views.find.FindMatchView
+import com.hayyaoe.badmintonapp.ui.views.find.FindSpartnerView
 import com.hayyaoe.badmintonapp.ui.views.nav.AccountScreen
 import com.hayyaoe.badmintonapp.ui.views.nav.FavoriteScreen
-import com.hayyaoe.badmintonapp.ui.views.nav.HomeScreen
 import com.hayyaoe.badmintonapp.ui.views.nav.ShopScreen
 
 class MainActivity : ComponentActivity() {

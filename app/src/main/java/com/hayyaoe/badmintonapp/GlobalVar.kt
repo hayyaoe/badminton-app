@@ -12,11 +12,18 @@ fun navController(): NavHostController {
     return rememberNavController()
 }
 
-fun getResId(resName: String, c: Class<*> = R.drawable::class.java): Int {
+fun getResId(resName: String?, c: Class<*> = R.drawable::class.java): Int {
     try {
-        val idField = c.getDeclaredField(resName)
-        idField.isAccessible = true
-        return idField.getInt(null)
+        if (resName.isNullOrBlank()){
+            val idField = c.getDeclaredField("rafi")
+            idField.isAccessible = true
+            return idField.getInt(null)
+        }else{
+            val idField = c.getDeclaredField(resName)
+            idField.isAccessible = true
+            return idField.getInt(null)
+        }
+
     } catch (e: Exception) {
         e.printStackTrace()
         val idField = c.getDeclaredField("rafi")

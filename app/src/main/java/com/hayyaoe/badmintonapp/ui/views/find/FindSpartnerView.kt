@@ -4,9 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,24 +22,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import com.google.gson.Gson
+import com.hayyaoe.badmintonapp.model.OtherUser
 import com.hayyaoe.badmintonapp.navController
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.BottomBar
 import com.hayyaoe.badmintonapp.ui.views.TopBar
 import com.hayyaoe.badmintonapp.model.People
 import com.hayyaoe.badmintonapp.showToast
+import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerViewModel
 
 
 class FindMatch : ComponentActivity() {
@@ -61,7 +59,7 @@ class FindMatch : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FindMatchView(peopleList)
+//                    FindSpartnerView(peopleList)
                 }
             }
         }
@@ -70,16 +68,17 @@ class FindMatch : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FindMatchView(people: List<People>) {
-
-    val context = LocalContext.current
-    val navController = navController()
+fun FindSpartnerView(
+    people: List<OtherUser>,
+    navController: NavController,
+    findSpartnerViewModel: FindSpartnerViewModel
+) {
 
     var showDialog by remember { mutableStateOf(false) }
-    var selectedData by remember { mutableStateOf<People?>(null) }
+    var selectedData by remember { mutableStateOf<OtherUser?>(null) }
 
     @Composable
-    fun PopupCardContent(data: People) {
+    fun PopupCardContent(data: OtherUser) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -92,15 +91,15 @@ fun FindMatchView(people: List<People>) {
             contentAlignment = Alignment.Center
         ) {
             CardDetailView(
-                _name = data.name,
-                _location = data.location,
-                _profilePicture = data.profilePicture,
-                _phone = data.phone,
-                _instagram = data.instagram,
+                _name = data.username,
+                _location = findSpartnerViewModel.getLocationById(data.location_id),
+                _profilePicture = data.profile_path,
+                _phone = data.phone_number,
+                _instagram = data.contacts,
                 onCardClick = {
                     showDialog = false
                     selectedData = null
-                }
+                },
 
             )
         }
@@ -135,16 +134,18 @@ fun FindMatchView(people: List<People>) {
                         people.forEach {
                             item {
                                 CardFindView(
-                                    _profilePicture = it.profilePicture,
-                                    _name = it.name,
-                                    _location = it.location,
-                                    _phone = it.phone,
-                                    _instagram = it.instagram,
+                                    _id = it.id,
+                                    _rank = it.rank,
+                                    _profilePicture = it.profile_path,
+                                    _name = it.username,
+                                    _location = it.location_id,
+                                    _phone = it.phone_number,
+                                    _instagram = it.contacts,
                                     onCardClick = {
-                                        showToast(context, it.name)
                                         selectedData = it
                                         showDialog = true
-                                    }
+                                    },
+                                    findSpartnerViewModel= findSpartnerViewModel
                                 )
                             }
                         }

@@ -85,13 +85,13 @@ fun CustomDropdownMenuBox(
                 )
                 .clip(RoundedCornerShape(14.dp))
                 .clickable { onExpandedChange(!expanded) }
-                .height(50.dp)
+                .height(55.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .height(50.dp),
+                    .height(55.dp),
                 verticalArrangement = Arrangement.Center
             ) {
                 Row (

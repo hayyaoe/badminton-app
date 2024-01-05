@@ -44,19 +44,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hayyaoe.badmintonapp.getResId
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
+import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDetailView(
-    _profilePicture: String,
+    _profilePicture: String?,
     _name: String,
     _location: String,
     _phone: String,
     _instagram: String,
-    onCardClick: () -> Unit
+    onCardClick: () -> Unit,
 ) {
+
 
     val profilePicture: Int = getResId(_profilePicture)
     val name: String = _name
@@ -184,10 +187,10 @@ fun CardDetailPreview() {
             CardDetailView(
                 "rafi",
                 "Rafi Abhista Naya",
-                "WP, Citraland UC WP, Citraland UC WP, Citraland UC",
+                "WP",
                 "091234567890",
                 "abhista_naya",
-                onCardClick = {}
+                onCardClick = {},
             )
         }
     }

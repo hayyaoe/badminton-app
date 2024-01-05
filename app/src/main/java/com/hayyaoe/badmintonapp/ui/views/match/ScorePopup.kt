@@ -1,5 +1,6 @@
 package com.hayyaoe.badmintonapp.ui.views.match
 
+import android.content.Context
 import android.content.res.Configuration
 import android.view.RoundedCorner
 import androidx.annotation.DrawableRes
@@ -40,14 +41,20 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.repository.BadmintonContainer
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.auth.CustomButton
 import com.hayyaoe.badmintonapp.ui.views.auth.poppins
@@ -61,7 +68,8 @@ fun ScorePopUp(
     isWon2 : Boolean  = false,
     player1_name : String = "Bob Hee",
     player2_name : String = "Pak Evan",
-    onClick : ()-> Unit
+    onClick : ()-> Unit,
+    context: Context = LocalContext.current
 ){
 
     Card (
@@ -112,8 +120,8 @@ fun ScorePopUp(
                     modifier = Modifier.fillMaxWidth()
                 ){
 
-                    UserProfile(drawable = R.drawable.rafi, player1_name)
-                    UserProfile(drawable = R.drawable.evan_tanuwijaya__s_kom___m_kom_resize, player2_name)
+                    UserProfile(drawable = "/images/1704426687.jpg", player1_name, context)
+                    UserProfile(drawable = "/images/1704426687.jpg", player2_name, context)
                 }
 
                 ScoreBoard(score1, score2, isWon1, isWon2, Modifier.offset(y= (-20).dp))
@@ -190,8 +198,11 @@ fun Set(
 
 @Composable
 fun UserProfile(
-    drawable: Int,
-    player_name : String
+    drawable: String,
+    player_name : String,
+    context: Context,
+    modifier: Modifier= Modifier,
+    fontSize: TextUnit = 24.sp
 ){
     Column (horizontalAlignment = Alignment.CenterHorizontally){
         Box(
@@ -205,10 +216,11 @@ fun UserProfile(
                 )
                 .padding(6.dp)
         ) {
-            Image(
-                painter = painterResource(id = drawable), contentDescription = "Player 1",
+            AsyncImage(
+                model = ImageRequest.Builder(context = context).data(BadmintonContainer.API_URL+drawable).crossfade(true).build()
+                , contentDescription = "Player 1",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
+                modifier = modifier
                     .size(135.dp)
                     .clip(shape = RoundedCornerShape(16))
             )
@@ -217,7 +229,9 @@ fun UserProfile(
             text = player_name,
             fontFamily = poppins,
             fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
+            fontSize = fontSize,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -291,7 +305,7 @@ private fun ScorePopUpPreview(){
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            ScorePopUp(2,1,true,false, onClick = {})
+//            ScorePopUp(2,1,true,false, onClick = {})
         }
     }
 }

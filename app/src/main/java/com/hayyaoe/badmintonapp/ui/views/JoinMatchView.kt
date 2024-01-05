@@ -30,10 +30,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.navController
+import com.hayyaoe.badmintonapp.ui.views.auth.CustomButton
+import com.hayyaoe.badmintonapp.ui.views.auth.CustomTextBox
+import com.hayyaoe.badmintonapp.ui.views.auth.poppins
+import com.hayyaoe.badmintonapp.viewmodel.home.JoinMatchViewModel
 
 @Composable
-fun JoinMatchView() {
+fun JoinMatchView(
+    joinMatchViewModel: JoinMatchViewModel,
+    navController: NavController
+) {
     var matchCode by rememberSaveable { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var showLoadingDialog by remember { mutableStateOf(false) }
@@ -41,55 +51,39 @@ fun JoinMatchView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding (32.dp, 40.dp)
+            .padding(vertical = 40.dp)
             .verticalScroll(rememberScrollState()),
     ) {
         Text(
             text = "Join Match",
             fontSize = 44.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 50.dp),
+            fontFamily = poppins
         )
         Image(
             painter = painterResource(id = R.drawable.placeholder),
             contentDescription = "Picture",
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
-                .padding(0.dp, 16.dp)
+                .padding(50.dp, 16.dp)
                 .fillMaxWidth()
         )
-        Text(
-            text = "Enter Match Code",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(top = 18.dp)
-        )
-        CustomTextField(
+        CustomTextBox(
             value = matchCode,
-            onValueChanged = { matchCode = it },
-            text = "Match Code",
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp, 4.dp, 0.dp, 8.dp)
+            onValueChange = {matchCode= it},
+            label = "Enter Match Code",
+            errorMessage = "Not Found",
         )
-        Button(
+        CustomButton(
             onClick = {
-                showLoadingDialog = true
                 isLoading = true
+                showLoadingDialog = true
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp, 8.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xFF5DA119)),
-            shape = RoundedCornerShape(14.dp),
-            enabled = matchCode.isNotBlank()
-        ) {
-            Text(text = "CONFIRM MATCH", fontWeight = FontWeight.SemiBold)
-        }
+            content = "JOIN MATCH",
+            isEnabled = matchCode.isBlank(),
+            modifier = Modifier.padding(horizontal = 26.dp, vertical = 20.dp)
+        )
     }
     if (showLoadingDialog) {
         Column(
@@ -125,5 +119,5 @@ fun LoadingDialog() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun JoinMatchPreview(){
-    JoinMatchView()
+    JoinMatchView(viewModel(), navController())
 }
