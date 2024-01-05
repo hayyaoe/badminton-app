@@ -1,9 +1,11 @@
 package com.hayyaoe.badmintonapp.ui.view
 
+import android.content.Context
 import android.graphics.Paint.Align
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,16 +30,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.ui.views.auth.poppins
+import com.hayyaoe.badmintonapp.ui.views.match.UserProfile
+import com.hayyaoe.badmintonapp.viewmodel.home.HistoryViewModel
 
 @Composable
-fun HistoryView() {
+fun HistoryView(
+    historyViewModel: HistoryViewModel,
+    navController: NavController,
+) {
+
+    val context=  LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +66,8 @@ fun HistoryView() {
                 Text(
                     text = "History",
                     fontSize = 44.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = poppins,
                     modifier = Modifier
                         .padding(top = 40.dp, bottom = 12.dp)
                 )
@@ -61,7 +77,10 @@ fun HistoryView() {
                     opponent = "Pak Evan",
                     details = "Bob Hee played really well",
                     yourScore = 2,
-                    opponentScore = 1
+                    opponentScore = 1,
+                    context = context,
+                    playerPict = "/images/1704426687.jpg",
+                    opponentPict = "/images/1704426687.jpg"
                 )
 
                 HistoryCard(
@@ -70,7 +89,10 @@ fun HistoryView() {
                     opponent = "Pak Evan",
                     details = "Bob played really bad",
                     yourScore = 1,
-                    opponentScore = 2
+                    opponentScore = 2,
+                    context = context,
+                    playerPict = "/images/1704426687.jpg",
+                    opponentPict = "/images/1704426687.jpg"
                 )
 
                 HistoryCard(
@@ -79,7 +101,10 @@ fun HistoryView() {
                     opponent = "Pak Evan",
                     details = "Bob played really bad",
                     yourScore = 2,
-                    opponentScore = 2
+                    opponentScore = 2,
+                    context = context,
+                    playerPict = "/images/1704426687.jpg",
+                    opponentPict = "/images/1704426687.jpg"
                 )
             }
         }
@@ -89,11 +114,14 @@ fun HistoryView() {
 @Composable
 fun HistoryCard(
     date: String,
+    playerPict: String,
+    opponentPict: String,
     player: String,
     opponent: String,
     details: String,
     yourScore: Int,
-    opponentScore: Int
+    opponentScore: Int,
+    context: Context
 ) {
     val backgroundColor = if (yourScore > opponentScore) {
         Color(0xFF5DA119)
@@ -119,8 +147,8 @@ fun HistoryCard(
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
-            colors = CardDefaults.cardColors(Color.White),
-            elevation = CardDefaults.cardElevation(10.dp)
+            colors = CardDefaults.cardColors(if (isSystemInDarkTheme()) Color(0xFF292828) else Color.White),
+            elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -135,6 +163,7 @@ fun HistoryCard(
                     text = date,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
+                    fontFamily= poppins,
                     color = Color.White,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -151,23 +180,7 @@ fun HistoryCard(
                         .weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Your Picture",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .width(64.dp)
-                            .height(64.dp)
-                            .clip(RoundedCornerShape(32.dp))
-                    )
-                    Text(
-                        text = player,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(0.dp, 8.dp)
-                    )
+                    UserProfile(drawable = playerPict, player_name = player, context = context, modifier = Modifier.size(80.dp), fontSize = 16.sp)
                 }
                 Column(
                     modifier = Modifier
@@ -179,7 +192,8 @@ fun HistoryCard(
                     Text(
                         text = "VS",
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontFamily= poppins,
+                        fontWeight = FontWeight.SemiBold,
                         color = backgroundColor
                     )
                 }
@@ -188,23 +202,7 @@ fun HistoryCard(
                         .weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "Opponent Picture",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .width(64.dp)
-                            .height(64.dp)
-                            .clip(RoundedCornerShape(32.dp))
-                    )
-                    Text(
-                        text = opponent,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(0.dp, 8.dp)
-                    )
+                    UserProfile(drawable = opponentPict, player_name = opponent, context = context, modifier = Modifier.size(80.dp), fontSize = 16.sp)
                 }
             }
             Column (
@@ -218,11 +216,13 @@ fun HistoryCard(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    color = secondBackgroundColor
+                    color = secondBackgroundColor,
+                    fontFamily = poppins
                 )
                 Text(
                     text = details,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    fontFamily = poppins
                 )
             }
         }
@@ -242,10 +242,14 @@ fun HistoryCard(
                         .background(
                             color = if (yourScore < opponentScore) {
                                 backgroundColor
-                            } else { secondBackgroundColor },
+                            } else {
+                                secondBackgroundColor
+                            },
                             shape = if (yourScore < opponentScore) {
                                 RoundedCornerShape(0.dp)
-                            } else { RoundedCornerShape(12.dp) }
+                            } else {
+                                RoundedCornerShape(12.dp)
+                            }
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -267,10 +271,14 @@ fun HistoryCard(
                         .background(
                             color = if (yourScore < opponentScore) {
                                 secondBackgroundColor
-                            } else { backgroundColor },
+                            } else {
+                                backgroundColor
+                            },
                             shape = if (yourScore < opponentScore) {
                                 RoundedCornerShape(12.dp)
-                            } else { RoundedCornerShape(0.dp) }
+                            } else {
+                                RoundedCornerShape(0.dp)
+                            }
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -293,5 +301,5 @@ fun HistoryCard(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun HistoryPreview() {
-    HistoryView()
+    HistoryView(viewModel(), rememberNavController())
 }

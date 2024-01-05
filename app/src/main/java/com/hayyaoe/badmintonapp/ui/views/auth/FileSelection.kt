@@ -2,6 +2,7 @@ package com.hayyaoe.badmintonapp.ui.views.auth
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,10 +42,11 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CustomFileSelectionBox(
     value: String,
-    onValueChange: (String) -> Unit,
+    onValueChange: (Uri?) -> Unit,
     isError: Boolean = false,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     label: String,
+    onClick: ()-> Unit
 ) {
 
     Column (
@@ -76,13 +78,13 @@ fun CustomFileSelectionBox(
                 )
                 .clip(RoundedCornerShape(14.dp))
                 .clickable {}
-                .height(50.dp)
+                .height(55.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 8.dp)
-                    .height(50.dp),
+                    .height(55.dp),
                 verticalArrangement = Arrangement.Center
             ) {
                 Row(
@@ -100,7 +102,7 @@ fun CustomFileSelectionBox(
                     )
 
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = onClick,
                         modifier = Modifier.height(34.dp),
                         shape = RoundedCornerShape(20),
                         colors = ButtonDefaults.buttonColors(containerColor = if (isSystemInDarkTheme()) Color(
@@ -133,16 +135,17 @@ fun CustomFileSelectionPreview(){
     Surface(
         color = MaterialTheme.colorScheme.background
     ) {
-        var file by rememberSaveable {
-            mutableStateOf("")
-        }
+         var selectedImage by rememberSaveable {
+        mutableStateOf<Uri?>(null)
+    }
 
         CustomFileSelectionBox(
 
-            value = file,
-            onValueChange = {file = it},
+            value = "",
+            onValueChange = {selectedImage = it},
             isError = false ,
-            label = "Profile Picture"
+            label = "Profile Picture",
+            onClick = {}
         )
     }
 }

@@ -1,6 +1,9 @@
 package com.hayyaoe.badmintonapp.ui.views.auth
 
 import android.content.res.Configuration
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -55,12 +58,26 @@ fun UserDetailsView (
 
     val userDetailUiState by userDetailViewModel.uiState.collectAsState()
 
-    var profile by rememberSaveable { mutableStateOf("") }
+    var profile by rememberSaveable { mutableStateOf(0) }
     var contacts by rememberSaveable { mutableStateOf("") }
     var phone by rememberSaveable { mutableStateOf("") }
     var region by rememberSaveable { mutableStateOf("") }
     var isExpanded1 by remember { mutableStateOf(false) }
     var isExpanded2 by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    var selectedImage by rememberSaveable {
+        mutableStateOf<Uri?>(null)
+    }
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        selectedImage = it
+        if (selectedImage != null){
+            userDetailViewModel.uploadImage(selectedImage!!, context)
+        }
+    }
 
     LazyColumn (
         modifier = Modifier
@@ -127,11 +144,9 @@ fun UserDetailsView (
                                 )
                             }
 
-                            CustomFileSelectionBox(
-                                value = profile,
-                                onValueChange = { profile = it },
-                                label = "Profile Picture"
-                            )
+                            CustomFileSelectionBox(value = "", onValueChange = {selectedImage = it}, label = "New Profile Picture") {
+                                galleryLauncher.launch("image/*")
+                            }
 
 
                             CustomDropdownMenuBox(

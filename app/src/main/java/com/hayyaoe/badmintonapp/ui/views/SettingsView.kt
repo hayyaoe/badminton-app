@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -49,17 +50,41 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.data.DataStoreManager
+import com.hayyaoe.badmintonapp.model.UserData
+import com.hayyaoe.badmintonapp.navController
+import com.hayyaoe.badmintonapp.repository.BadmintonContainer
+import com.hayyaoe.badmintonapp.ui.views.auth.CustomButton
+import com.hayyaoe.badmintonapp.ui.views.auth.CustomDropdownMenuBox
+import com.hayyaoe.badmintonapp.ui.views.auth.CustomFileSelectionBox
+import com.hayyaoe.badmintonapp.ui.views.auth.CustomTextBox
+import com.hayyaoe.badmintonapp.ui.views.auth.poppins
+import com.hayyaoe.badmintonapp.viewmodel.home.SettingsViewModel
 
 @Composable
-fun SettingsView() {
-    var name by rememberSaveable { mutableStateOf("") }
-    var profilePicture by rememberSaveable { mutableStateOf(0) }
-    var city by rememberSaveable { mutableStateOf("") }
-    var region by rememberSaveable { mutableStateOf("") }
-    var phone by rememberSaveable { mutableStateOf("") }
-    var otherContact by rememberSaveable { mutableStateOf("") }
+fun SettingsView(
+    settingsViewModel: SettingsViewModel,
+    navController: NavController,
+    dataStore: DataStoreManager,
+    userData: UserData,
+    regions: List<String>
+) {
+    var username by rememberSaveable { mutableStateOf(userData.username) }
+    var profilePicture by rememberSaveable { mutableStateOf(userData.image_path) }
+    var region by rememberSaveable { mutableStateOf(if (userData.location_id != null) regions[userData.location_id-1] else "Select Region") }
+    var phone by rememberSaveable { mutableStateOf(if(userData.phone_number.isNullOrBlank()) "" else userData.phone_number) }
+    var otherContact by rememberSaveable { mutableStateOf(if (userData.contacts.isNullOrBlank()) "" else userData.contacts) }
     var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var rank by rememberSaveable { mutableStateOf(userData.rank) }
+
+    val context = LocalContext.current
 
     var selectedImage by rememberSaveable {
         mutableStateOf<Uri?>(null)
@@ -68,18 +93,22 @@ fun SettingsView() {
         contract = ActivityResultContracts.GetContent()
     ) {
         selectedImage = it
+        if (selectedImage != null){
+            settingsViewModel.uploadImage(selectedImage!!, context)
+        }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color(0xFFF1F1F1))
-            .padding (0.dp, 32.dp, 0.dp, 0.dp)
+            .padding(0.dp, 32.dp, 0.dp, 0.dp)
             .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.placeholder),
+        AsyncImage(
+            model = ImageRequest.Builder(context).data(BadmintonContainer.API_URL+userData.image_path ).crossfade(true).build(),
             contentDescription = "Profile Picture",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -87,17 +116,14 @@ fun SettingsView() {
                 .clip(shape = CircleShape)
         )
         Row (
-            modifier = Modifier.padding(bottom = 24.dp)
+            modifier = Modifier.padding(bottom = 24.dp, top = 10.dp)
         ) {
             Text(
-                text = "John Doe",
+                text = userData.username,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(4.dp, 0.dp)
-            )
-            Icon(
-                imageVector = Icons.Outlined.Edit,
-                contentDescription = "Edit Icon"
+                modifier = Modifier.padding(4.dp, 0.dp),
+                fontFamily = poppins
             )
         }
 
@@ -111,141 +137,74 @@ fun SettingsView() {
         ) {
             Column (
                 modifier = Modifier
-                    .padding(32.dp, 16.dp)
+                    .padding(vertical =  16.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Text(
                     text = "Edit Your Profile",
-                    fontSize = 28.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(20.dp, 28.dp, 20.dp, 2.dp)
+                    modifier = Modifier.padding(48.dp, 28.dp, 48.dp, 2.dp),
+                    fontFamily = poppins,
                 )
-                Text(
-                    text = "New Profile Picture",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(32.dp, 18.dp, 20.dp, 0.dp)
-                )
-                Button(
-                    onClick = {
-                        galleryLauncher.launch("image/*")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 4.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = Color(0xFF5DA119)
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    border = BorderStroke(1.dp, Color(0xFF5DA119))
-                ) {
-                    Text(
-                        text = "Select",
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Right
-                    )
+                CustomFileSelectionBox(value = "", onValueChange = {selectedImage = it}, label = "New Profile Picture") {
+                    galleryLauncher.launch("image/*")
                 }
-                Text(
-                    text = "City",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(32.dp, 18.dp, 20.dp, 0.dp)
-                )
-                CustomTextField(
-                    value = city,
-                    onValueChanged = { city = it },
-                    text = "City",
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 2.dp)
-                )
-                Text(
-                    text = "Region",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
-                )
-                CustomTextField(
+
+                CustomDropdownMenuBox(
+                    expanded = isExpanded,
+                    onExpandedChange = { isExpanded = it },
                     value = region,
-                    onValueChanged = { region = it },
-                    text = "Region",
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 2.dp)
+                    onValueChange = { region = it },
+                    isError = false,
+                    options = regions,
+                    label = "Region"
                 )
-                Text(
-                    text = "Phone",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
-                )
-                CustomTextField(
+                CustomTextBox(
+                    value = username,
+                    onValueChange = {username = it},
+                    label = "Username",
+                    errorMessage = "Cannot Be Null")
+                CustomTextBox(
                     value = phone,
-                    onValueChanged = { phone = it },
-                    text = "Phone",
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 2.dp)
+                    onValueChange = {phone = it},
+                    label = "Phone",
+                    errorMessage = ""
                 )
-                Text(
-                    text = "Other Contact",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
-                )
-                CustomTextField(
+                CustomTextBox(
                     value = otherContact,
-                    onValueChanged = { otherContact = it },
-                    text = "Other Contact",
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 2.dp)
-                )
-                Text(
-                    text = "Password",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(32.dp, 4.dp, 20.dp, 0.dp)
-                )
-                CustomTextField(
-                    value = password,
-                    onValueChanged = { password = it },
-                    text = "Password",
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 2.dp)
+                    onValueChange = {otherContact = it},
+                    label = "Contacts", errorMessage = ""
                 )
 
-                Button(
+                CustomTextBox(
+                    password,
+                    { password = it },
+                    "Password",
+                    KeyboardType.Password,
+                    isPassword = true,
+                    isError = settingsViewModel.isPasswordCorrect(password, confirmPassword),
+                    errorMessage = "Password Don't Match"
+
+                )
+                CustomTextBox(
+                    confirmPassword,
+                    { confirmPassword = it },
+                    "Confirm Password",
+                    KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                    isPassword = true,
+                    isError = settingsViewModel.isPasswordCorrect(password, confirmPassword),
+                    errorMessage = "Password Don't Match"
+                )
+
+                CustomButton(
                     onClick = {
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 16.dp),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF5DA119))
-                ) {
-                    Text(text = "SAVE", fontWeight = FontWeight.SemiBold)
-                }
+                        settingsViewModel.updateUser(username = username,region = region, phone_number = phone, contacts = otherContact, password, rank = rank, image_path = profilePicture)
+                        },
+                    content = "SAVE",
+                    modifier = Modifier.padding(vertical = 26.dp, horizontal = 26.dp),
+                    isEnabled = region.isNotBlank() && otherContact.isNotBlank() && phone.isNotBlank() && username.isNotBlank())
             }
         }
     }
@@ -294,5 +253,5 @@ fun ImageField(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun SettingsPreview() {
-    SettingsView()
+//    SettingsView(viewModel(), navController(), DataStoreManager(LocalContext.current), UserData())
 }

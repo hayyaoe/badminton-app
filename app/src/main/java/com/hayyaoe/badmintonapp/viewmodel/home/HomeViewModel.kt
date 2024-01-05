@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import com.hayyaoe.badmintonapp.model.User
 import com.hayyaoe.badmintonapp.navController
 import com.hayyaoe.badmintonapp.repository.BadmintonContainer
+import com.hayyaoe.badmintonapp.ui.ListScreen
 import kotlinx.coroutines.launch
 
 sealed interface HomeUiState{
@@ -26,23 +27,23 @@ class HomeViewModel: ViewModel(){
     fun findSpartner(
         navController:NavController
     ){
-        navController.navigate("")
+        navController.navigate(ListScreen.FindSpartnerView.name)
     }
     fun createMatch(
         navController:NavController
     ){
-        navController.navigate("")
+        navController.navigate(ListScreen.CreateMatchView.name)
     }
 
     fun joinMatch(
         navController:NavController
     ){
-        navController.navigate("")
+        navController.navigate(ListScreen.JoinMatchView.name)
     }
 
     fun matchHistory(
         navController:NavController
     ){
-        navController.navigate("")
+        navController.navigate(ListScreen.HistoryView.name)
     }
 }

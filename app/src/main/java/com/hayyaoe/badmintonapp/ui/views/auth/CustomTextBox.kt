@@ -120,7 +120,7 @@ fun CustomTextBoxPreview(){
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            var test by rememberSaveable { mutableStateOf("") }
+            var test by rememberSaveable { mutableStateOf("Try") }
            CustomTextBox(value = test, onValueChange = {test= it}, label = "Test", errorMessage = "Coba Error Nih")
         }
     }

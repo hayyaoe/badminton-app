@@ -11,9 +11,12 @@ class BadmintonContainer {
     companion object {
         var ACCESS_TOKEN = ""
         var EMAIL = ""
+        val API_URL = "https://2658-125-166-118-103.ngrok-free.app"
     }
 
-    private val BASE_URL = "https://aff3-2001-448a-5130-fa4f-a0bc-dcb7-12c-f1e.ngrok-free.app/api/"
+
+
+    private val BASE_URL = "$API_URL/api/"
 
     // OkHttpClient setup
     private val client = OkHttpClient.Builder()
