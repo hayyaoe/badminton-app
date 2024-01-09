@@ -1,3 +1,3 @@
 package com.hayyaoe.badmintonapp.model
 
-class HistoryResponse : ArrayList<HistoryResponseItem>()
+data class HistoryResponse(val history : ArrayList<CreateGameResponse> )

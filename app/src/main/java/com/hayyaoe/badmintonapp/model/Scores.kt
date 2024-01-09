@@ -1,4 +1,7 @@
 package com.hayyaoe.badmintonapp.model
 
-class Scores {
-}
+data class Scores (
+    var score1: Int =0,
+    var score2: Int = 0
+
+)

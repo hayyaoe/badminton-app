@@ -28,22 +28,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.hayyaoe.badmintonapp.model.Player
 import com.hayyaoe.badmintonapp.navController
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.TopBar
 import com.hayyaoe.badmintonapp.ui.views.auth.CustomButton
 import com.hayyaoe.badmintonapp.ui.views.auth.poppins
+import com.hayyaoe.badmintonapp.viewmodel.home.MatchProcessViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MatchProcessView(){
-
-    val navController = navController()
-    val context = LocalContext
+fun MatchProcessView(
+    navController: NavController,
+    userData: Player,
+    matchProcessViewModel: MatchProcessViewModel,
+){
+    val context = LocalContext.current
 
     var showDialog by remember{ mutableStateOf(false) }
-    var scores by remember{ mutableStateOf("")}
 
     @Composable
     fun ScorePopup(){
@@ -88,7 +92,7 @@ fun MatchProcessView(){
                             )
                         }
                         item {
-                            PlayerCard()
+                            PlayerCard(userData,context)
                         }
                         item {
                             CustomButton(onClick = { /*TODO*/ }, content = "Finish Match", modifier = Modifier.padding(top = 30.dp),true)
@@ -128,7 +132,7 @@ private fun matchProcessPreview(){
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MatchProcessView()
+            MatchProcessView(navController(),  Player("", 1,"BUDI"),viewModel())
         }
     }
 }

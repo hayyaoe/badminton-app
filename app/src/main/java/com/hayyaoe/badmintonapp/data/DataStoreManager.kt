@@ -18,6 +18,7 @@ class DataStoreManager (context: Context){
     companion object {
         val TOKEN_KEY = stringPreferencesKey("token_key")
         val USER_EMAIL = stringPreferencesKey("user_email")
+        val GAMECODE = stringPreferencesKey("game_code")
     }
 
     suspend fun saveToken(token: String) {
@@ -34,9 +35,21 @@ class DataStoreManager (context: Context){
         }
     }
 
+    suspend fun saveGameCode(gameCode: String) {
+        dataStore.edit { preferences ->
+            preferences[GAMECODE] = gameCode
+            Log.d("DataStoreManager", "Gamecode saved: $gameCode")
+        }
+    }
+
     val getToken: Flow<String?> = dataStore.data.map { preferences ->
         Log.d("DataStoreManager", "Fetching Token: ${preferences[TOKEN_KEY]}")
         preferences[TOKEN_KEY]
+    }
+
+    val getGameCode: Flow<String?> = dataStore.data.map { preferences ->
+        Log.d("DataStoreManager", "Fetching GameCode: ${preferences[GAMECODE]}")
+        preferences[GAMECODE]
     }
 
     val getEmail: Flow<String?> = dataStore.data.map { preferences ->

@@ -21,6 +21,7 @@ class FindSpartnerViewModel: ViewModel(){
     var findSpartnerUiState: FindSpartnerUiState by mutableStateOf(FindSpartnerUiState.Loading)
     lateinit var people: List<OtherUser>
 
+    var regions = listOf<Location>()
 
     init {
         loadData()
@@ -31,30 +32,18 @@ class FindSpartnerViewModel: ViewModel(){
             try {
                 people = BadmintonContainer().badmintonRepositories.get_users()
                 findSpartnerUiState = FindSpartnerUiState.Success(people)
+                regions = BadmintonContainer().badmintonRepositories.all_locations()
 
             }catch (e: Exception){
                 Log.d("Find Spartner Load Data", e.message.toString())
                 findSpartnerUiState = FindSpartnerUiState.Error
             }
-
-
-
         }
     }
 
     fun getLocationById(locationId: Int): String{
-
-        var regions = listOf<Location>()
-        viewModelScope.launch{
-            try {
-                regions = BadmintonContainer().badmintonRepositories.all_locations()
-            }catch (e: Exception){
-                Log.d("Regions In Spartner Load Data",e.message.toString())
-            }
-        }
         var location = ""
         for (region in regions){
-            Log.d("RegionId","$region.id")
             if (region.id == locationId){
                 location = region.region
                 Log.d("RegionMatch",location)

@@ -1,6 +1,7 @@
 package com.hayyaoe.badmintonapp.ui.views.find
 
 import android.R
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
@@ -45,7 +47,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.hayyaoe.badmintonapp.getResId
+import com.hayyaoe.badmintonapp.repository.BadmintonContainer
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerViewModel
 
@@ -58,9 +63,8 @@ fun CardDetailView(
     _phone: String,
     _instagram: String,
     onCardClick: () -> Unit,
+    context: Context
 ) {
-
-
     val profilePicture: Int = getResId(_profilePicture)
     val name: String = _name
     val location: String = _location
@@ -90,8 +94,8 @@ fun CardDetailView(
                 modifier = Modifier
                     .padding(bottom = 24.dp)
             ) {
-                Image(
-                    painter = painterResource(id = profilePicture),
+                AsyncImage(
+                    model= ImageRequest.Builder(context).data(BadmintonContainer.API_URL+_profilePicture ).crossfade(true).build(),
                     contentDescription = "profile picture",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -191,6 +195,7 @@ fun CardDetailPreview() {
                 "091234567890",
                 "abhista_naya",
                 onCardClick = {},
+                LocalContext.current
             )
         }
     }

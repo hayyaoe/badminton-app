@@ -27,6 +27,7 @@ import com.hayyaoe.badmintonapp.ui.views.auth.RegisterView
 import com.hayyaoe.badmintonapp.ui.views.auth.UserDetailsView
 import com.hayyaoe.badmintonapp.ui.views.find.FindSpartnerView
 import com.hayyaoe.badmintonapp.ui.views.match.CreateMatchView
+import com.hayyaoe.badmintonapp.ui.views.match.MatchProcessView
 import com.hayyaoe.badmintonapp.viewmodel.home.HomeViewModel
 import com.hayyaoe.badmintonapp.viewmodel.auth.LoginUiState
 import com.hayyaoe.badmintonapp.viewmodel.auth.LoginViewModel
@@ -40,8 +41,11 @@ import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerViewModel
 import com.hayyaoe.badmintonapp.viewmodel.home.HistoryUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.HistoryViewModel
+import com.hayyaoe.badmintonapp.viewmodel.home.HomeUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.JoinMatchUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.JoinMatchViewModel
+import com.hayyaoe.badmintonapp.viewmodel.home.MatchProcessUiState
+import com.hayyaoe.badmintonapp.viewmodel.home.MatchProcessViewModel
 import com.hayyaoe.badmintonapp.viewmodel.home.SettingsUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.SettingsViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -58,6 +62,8 @@ enum class ListScreen{
     HistoryView,
     JoinMatchView,
     CreateMatchView,
+    MatchProcessView,
+    CommentView,
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -185,10 +191,15 @@ fun BadmintonAppRoute() {
                     } else {
 
                         val homeViewModel: HomeViewModel = viewModel()
-                        HomeView(
-                            homeViewModel = homeViewModel,
-                            navController = navController
-                        )
+                        when (val status = homeViewModel.homeUiState) {
+                            is HomeUiState.Loading -> {}
+                            is HomeUiState.Error -> {}
+                            is HomeUiState.Success -> HomeView(
+                                homeViewModel = homeViewModel,
+                                navController = navController,
+                                user = status.user
+                            )
+                        }
                     }
                 }
 
@@ -199,7 +210,8 @@ fun BadmintonAppRoute() {
                         is HistoryUiState.Error -> {}
                         is HistoryUiState.Success -> HistoryView(
                             historyViewModel = historyViewModel,
-                            navController = navController
+                            navController = navController,
+                            historyList = status.history
                         )
                     }
                 }
@@ -226,14 +238,11 @@ fun BadmintonAppRoute() {
                         is CreateMatchUiState.Loading->{}
                         is CreateMatchUiState.Error->{}
                         is CreateMatchUiState.Success-> CreateMatchView(
-                            status.game,
-                            status.player,
-                            status.opponent,
-                            status.set1,
-                            status.set2,
-                            status.set3,
-                            navController,
-                            createMatchViewModel
+                            game = status.game,
+                            player = status.player,
+                            opponent = status.opponent,
+                            navController = navController,
+                            createMatchViewModel = createMatchViewModel
                         )
                     }
                 }
@@ -264,7 +273,19 @@ fun BadmintonAppRoute() {
                         is JoinMatchUiState.Loading->{}
                         is JoinMatchUiState.Error->{}
                         is JoinMatchUiState.Success->{
-                            JoinMatchView(joinMatchViewModel,navController)
+                            JoinMatchView(joinMatchViewModel,navController, dataStore)
+                        }
+                    }
+                }
+                
+                composable(ListScreen.MatchProcessView.name){
+                    val matchProcessViewModel : MatchProcessViewModel = viewModel()
+
+                    when(val status = matchProcessViewModel.matchProcessUiState){
+                        is MatchProcessUiState.Loading->{}
+                        is MatchProcessUiState.Error->{}
+                        is MatchProcessUiState.Success->{
+                            MatchProcessView(navController, status.userData, matchProcessViewModel)
                         }
                     }
                 }
