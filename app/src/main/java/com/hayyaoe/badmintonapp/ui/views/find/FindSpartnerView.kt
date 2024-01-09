@@ -73,12 +73,12 @@ fun FindSpartnerView(
     navController: NavController,
     findSpartnerViewModel: FindSpartnerViewModel
 ) {
-
     var showDialog by remember { mutableStateOf(false) }
     var selectedData by remember { mutableStateOf<OtherUser?>(null) }
 
     @Composable
     fun PopupCardContent(data: OtherUser) {
+        val context = LocalContext.current
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -100,6 +100,7 @@ fun FindSpartnerView(
                     showDialog = false
                     selectedData = null
                 },
+                context = context
 
             )
         }

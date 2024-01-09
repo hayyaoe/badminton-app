@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.model.UserData
 import com.hayyaoe.badmintonapp.navController
 import com.hayyaoe.badmintonapp.ui.views.BottomBar
 import com.hayyaoe.badmintonapp.viewmodel.home.HomeViewModel
@@ -50,7 +51,8 @@ import com.hayyaoe.badmintonapp.viewmodel.home.HomeViewModel
 @Composable
 fun HomeView(
     homeViewModel: HomeViewModel,
-    navController: NavController
+    navController: NavController,
+    user : UserData
 ) {
 
     Scaffold (
@@ -71,7 +73,7 @@ fun HomeView(
                             .weight(4f)
                     ) {
                         Text(
-                            text = "Hi, John!",
+                            text = "Hi, ${user.username}",
                             color = Color(0xFF5DA119),
                             fontSize = 18.sp,
                             modifier = Modifier
@@ -115,23 +117,23 @@ fun HomeView(
 
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 70.dp)
+                    contentPadding = PaddingValues(bottom = 75.dp)
                 ) {
                     item {
                         MenuCard(
-                            image = R.drawable.placeholder,
+                            image = R.drawable.placeholder__1_,
                             "Find Spartner",
                             { homeViewModel.findSpartner(navController) })
                         MenuCard(
-                            image = R.drawable.placeholder,
+                            image = R.drawable.placeholder__2_,
                             "Create Match",
                             { homeViewModel.createMatch(navController) })
                         MenuCard(
-                            image = R.drawable.placeholder,
+                            image = R.drawable.placeholder__3_,
                             "Join Match",
                             { homeViewModel.joinMatch(navController) })
                         MenuCard(
-                            image = R.drawable.placeholder,
+                            image = R.drawable.placeholder__5_,
                             "History",
                             { homeViewModel.matchHistory(navController) })
                     }
@@ -206,5 +208,5 @@ fun MenuCard(
 fun HomePreview() {
     val vm : HomeViewModel = viewModel()
 
-    HomeView(vm, navController())
+    HomeView(vm, navController(), UserData())
 }

@@ -11,7 +11,8 @@ class BadmintonContainer {
     companion object {
         var ACCESS_TOKEN = ""
         var EMAIL = ""
-        val API_URL = "https://2658-125-166-118-103.ngrok-free.app"
+        val API_URL = "https://901b-182-1-91-131.ngrok-free.app"
+        var GAMECODE = ""
     }
 
 

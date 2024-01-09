@@ -42,14 +42,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.model.Games
+import com.hayyaoe.badmintonapp.model.History
+import com.hayyaoe.badmintonapp.model.HistoryResponse
 import com.hayyaoe.badmintonapp.ui.views.auth.poppins
 import com.hayyaoe.badmintonapp.ui.views.match.UserProfile
 import com.hayyaoe.badmintonapp.viewmodel.home.HistoryViewModel
 
 @Composable
 fun HistoryView(
-    historyViewModel: HistoryViewModel,
     navController: NavController,
+    historyList: HistoryResponse,
+    historyViewModel: HistoryViewModel
 ) {
 
     val context=  LocalContext.current
@@ -71,41 +75,58 @@ fun HistoryView(
                     modifier = Modifier
                         .padding(top = 40.dp, bottom = 12.dp)
                 )
-                HistoryCard(
-                    date = "19 December 2024",
-                    player = "Bob Hee",
-                    opponent = "Pak Evan",
-                    details = "Bob Hee played really well",
-                    yourScore = 2,
-                    opponentScore = 1,
-                    context = context,
-                    playerPict = "/images/1704426687.jpg",
-                    opponentPict = "/images/1704426687.jpg"
-                )
+                for (history in historyList.history){
 
-                HistoryCard(
-                    date = "20 December 2024",
-                    player = "Bob Mark",
-                    opponent = "Pak Evan",
-                    details = "Bob played really bad",
-                    yourScore = 1,
-                    opponentScore = 2,
-                    context = context,
-                    playerPict = "/images/1704426687.jpg",
-                    opponentPict = "/images/1704426687.jpg"
-                )
+                    if (history.players != null){
+                        if (history.players.size > 1){
+                            (if (history.players[0].photo == null) "" else history.players[0].photo)?.let {it ->
+                                (if (history.players[1].photo == null) "" else history.players[1].photo)?.let { it1 ->
+                                    HistoryCard(
+                                        date = historyViewModel.formatDate(history.created_at),
+                                        player = history.players[0].username,
+                                        opponent = history.players[1].username,
+                                        details = history.information,
+                                        yourScore = history.score_1,
+                                        opponentScore = history.score_2,
+                                        context = context,
+                                        playerPict = it,
+                                        opponentPict = it1
+                                    )
+                                }
+                            }
+                        }else if (history.players.size == 1){
+                            (if (history.players[0].photo == null) "" else history.players[0].photo)?.let { it ->
+                                HistoryCard(
+                                    date = historyViewModel.formatDate(history.created_at),
+                                    player = history.players[0].username,
+                                    opponent = "Opponent",
+                                    details = history.information,
+                                    yourScore = history.score_1,
+                                    opponentScore = history.score_2,
+                                    context = context,
+                                    playerPict = it,
+                                    opponentPict = ""
+                                )
+                            }
 
-                HistoryCard(
-                    date = "21 December 2024",
-                    player = "Bob Mark",
-                    opponent = "Pak Evan",
-                    details = "Bob played really bad",
-                    yourScore = 2,
-                    opponentScore = 2,
-                    context = context,
-                    playerPict = "/images/1704426687.jpg",
-                    opponentPict = "/images/1704426687.jpg"
-                )
+                        }else{
+                            HistoryCard(
+                                date = "Date",
+                                player = "Player",
+                                opponent = "Opponent",
+                                details = "NONE",
+                                yourScore = 0,
+                                opponentScore = 0,
+                                context = context,
+                                playerPict = "",
+                                opponentPict = ""
+                            )
+                        }
+
+                    }
+
+
+                }
             }
         }
     }
@@ -301,5 +322,5 @@ fun HistoryCard(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun HistoryPreview() {
-    HistoryView(viewModel(), rememberNavController())
+//    HistoryView(viewModel(), rememberNavController())
 }

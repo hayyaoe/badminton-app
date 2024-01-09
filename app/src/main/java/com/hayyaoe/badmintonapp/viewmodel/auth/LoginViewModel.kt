@@ -46,8 +46,8 @@ class LoginViewModel : ViewModel() {
                     val data = response.data as List<*>
                     Log.d("login response", response.data.toString())
 
-                    dataStore.saveToken(data[1] as String)
-                    dataStore.saveEmail(data[0] as String)
+                    dataStore.saveToken(data[0] as String)
+                    dataStore.saveEmail(data[1] as String)
 
                     navController.navigate(ListScreen.HomeView.name)
 

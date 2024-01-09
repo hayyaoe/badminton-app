@@ -12,7 +12,7 @@ import com.hayyaoe.badmintonapp.ui.ListScreen
 
 sealed class Screen(val route: String, val icon: ImageVector, val label: String) {
     object Home : Screen("home", Icons.Outlined.Home, "Home")
-    object Favorite : Screen("favorite", Icons.Outlined.FavoriteBorder, "Search")
-    object Shop : Screen("shop", Icons.Outlined.ShoppingCart, "Profile")
+    object Favorite : Screen("home", Icons.Outlined.FavoriteBorder, "Search")
+    object Shop : Screen("home", Icons.Outlined.ShoppingCart, "Profile")
     object Account : Screen(ListScreen.SettingsView.name, Icons.Outlined.AccountCircle, "Settings")
 }

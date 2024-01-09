@@ -28,6 +28,10 @@ import androidx.compose.material.TextField
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,23 +45,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hayyaoe.badmintonapp.model.Player
+import com.hayyaoe.badmintonapp.model.Set
+import com.hayyaoe.badmintonapp.model.UserData
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.auth.poppins
+import com.hayyaoe.badmintonapp.viewmodel.home.CreateMatchUiState
+import com.hayyaoe.badmintonapp.viewmodel.home.CreateMatchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardSetView(
-    _set_no: String,
-    _name1: String,
-    _name2: String,
-    _score1: String,
-    _score2: String,
-    onClick1: (String) -> Unit,
-    onClick2: (String) -> Unit
+    setNo : String,
+    setData: Set,
+    player: Player,
+    opponent: Player?,
+    sets: List<Set>,
+    createMatchViewModel: CreateMatchViewModel,
 ) {
 
+    var score1 by remember {mutableStateOf(setData.player1_score.toString()) }
+    var score2 by remember {mutableStateOf(setData.player2_score.toString()) }
+
     Card(
-        onClick = {},
+        onClick = { createMatchViewModel.updateSet(set_id = setData.id, score1,score2, sets)},
         modifier = Modifier
             .padding(4.dp, 12.dp, 4.dp, 12.dp),
         shape = RoundedCornerShape(15),
@@ -76,7 +88,7 @@ fun CardSetView(
             ) {
                 Column {
                     Text(
-                        text = _set_no,
+                        text = setNo,
                         color = Color(0xff5DA118),
                         fontSize = 20.sp,
                         fontFamily = poppins,
@@ -120,7 +132,7 @@ fun CardSetView(
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = _name1,
+                                    text = player.username,
                                     color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Black,
@@ -129,7 +141,8 @@ fun CardSetView(
                                     maxLines = 1,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier
-                                        .fillMaxWidth().padding(bottom = 4.dp),
+                                        .fillMaxWidth()
+                                        .padding(bottom = 4.dp),
                                 )
                                 Box(
                                     modifier = Modifier
@@ -140,8 +153,8 @@ fun CardSetView(
                                     contentAlignment = Alignment.Center
                                 ){
                                    OutlinedTextField(
-                                       value = _score1,
-                                       onValueChange = onClick1,
+                                       value = score1,
+                                       onValueChange = {score1 = it},
                                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                                        textStyle = TextStyle(
                                            color = (if (isSystemInDarkTheme()) Color.Black else Color.White),
@@ -165,18 +178,35 @@ fun CardSetView(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Text(
-                                    text = _name2,
-                                    color = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Black,
-                                    softWrap = true,
-                                    fontFamily= poppins,
-                                    maxLines = 1,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth().padding(bottom = 4.dp),
-                                )
+                                if (opponent != null) {
+                                    Text(
+                                        text = opponent.username,
+                                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Black,
+                                        softWrap = true,
+                                        fontFamily= poppins,
+                                        maxLines = 1,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 4.dp),
+                                    )
+                                }else{
+                                    Text(
+                                        text = "Opponent",
+                                        color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Black,
+                                        softWrap = true,
+                                        fontFamily= poppins,
+                                        maxLines = 1,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 4.dp),
+                                    )
+                                }
                                 Box(
                                     modifier = Modifier
                                         .height(64.dp)
@@ -186,8 +216,8 @@ fun CardSetView(
                                     contentAlignment = Alignment.Center
                                 ){
                                     OutlinedTextField(
-                                        value = _score2,
-                                        onValueChange = onClick2,
+                                        value = score2,
+                                        onValueChange = {score2 = it},
                                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                                         textStyle = TextStyle(
                                             color = (if (isSystemInDarkTheme()) Color.Black else Color.White),
@@ -228,15 +258,14 @@ fun CardSetPreview() {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            CardSetView(
-                "set 1",
-                "rafi1",
-                "rafi2",
-                "20",
-                "10",
-                onClick1 = {},
-                onClick2 = {}
-            )
+//            CardSetView(
+//                "set 1",
+//                Set(0,0,"","",1,1),
+//                Player(null,0,"Rafi"),
+//                Player(null,0,"Raf2"),
+//                viewModel(),
+//                sets
+//            )
         }
     }
 }

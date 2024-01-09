@@ -3,17 +3,26 @@ package com.hayyaoe.badmintonapp.repository
 import android.net.Uri
 import android.util.Log
 import com.hayyaoe.badmintonapp.model.APIResponse
+import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResult
 import com.hayyaoe.badmintonapp.model.GameData
+import com.hayyaoe.badmintonapp.model.Games
 import com.hayyaoe.badmintonapp.model.GetSets
 import com.hayyaoe.badmintonapp.model.GetUser
+import com.hayyaoe.badmintonapp.model.History
+import com.hayyaoe.badmintonapp.model.HistoryResponse
+import com.hayyaoe.badmintonapp.model.JoinGameRequest
 import com.hayyaoe.badmintonapp.model.Location
 import com.hayyaoe.badmintonapp.model.LoginRequest
 import com.hayyaoe.badmintonapp.model.OtherUser
 import com.hayyaoe.badmintonapp.model.OtherUserData
+import com.hayyaoe.badmintonapp.model.Set
+import com.hayyaoe.badmintonapp.model.UpdateGameRequest
 import com.hayyaoe.badmintonapp.model.UpdateProfilePict
+import com.hayyaoe.badmintonapp.model.UpdateSetRequest
 import com.hayyaoe.badmintonapp.model.UpdateUser
 import com.hayyaoe.badmintonapp.model.UserData
+import com.hayyaoe.badmintonapp.model.UserGames
 import com.hayyaoe.badmintonapp.model.UserRegistrationRequest
 import com.hayyaoe.badmintonapp.service.BadmintonDBServices
 import okhttp3.MultipartBody
@@ -68,6 +77,7 @@ class BadmintonRepositories(private val badmintonDBServices: BadmintonDBServices
     }
 
     suspend fun get_user(): UserData {
+        Log.d("test123",  BadmintonContainer.EMAIL)
         return badmintonDBServices.get_user(GetUser(email = BadmintonContainer.EMAIL))
 
     }
@@ -101,24 +111,31 @@ class BadmintonRepositories(private val badmintonDBServices: BadmintonDBServices
         return data
     }
 
-    suspend fun create_game(): GameData {
-        val createGameData = badmintonDBServices.create_game(GetUser(BadmintonContainer.EMAIL))
-        Log.d("CreateGameData", createGameData.toString())
+    suspend fun create_game(): CreateGameResponse {
+        return badmintonDBServices.create_game(GetUser(BadmintonContainer.EMAIL))
+    }
 
-        val sets = badmintonDBServices.get_sets(GetSets( createGameData.game_id))
-        Log.d("GetSets", sets.toString())
+    suspend fun getUserGames(): HistoryResponse {
+        return badmintonDBServices.getUserGames(GetUser(email = BadmintonContainer.EMAIL))
+    }
 
-        val game = badmintonDBServices.get_game(GetSets(createGameData.game_id))
-        Log.d("GetGame", game.toString())
+    suspend fun create_set(game_id: Int): Set{
+        return badmintonDBServices.create_set(GetSets(game_id))
+    }
 
-        val userGames = badmintonDBServices.get_user_in_a_game(GetSets(createGameData.game_id))
-        Log.d("GetUserGames", userGames.toString())
+    suspend fun update_set(id: Int, score_1: Int, score_2: Int): Set{
+        return badmintonDBServices.update_set(UpdateSetRequest(id= id, player1_score = score_1, player2_score = score_2))
+    }
 
-        val user1 = badmintonDBServices.get_user(GetUser(user_id = userGames.data[0].user_id))
-        Log.d("UserData",user1.toString())
-        val set1 = sets.data[0]
-        val set2 = sets.data[1]
+    suspend fun update_game(gamecode: String, gamestatus: Int, information: String, score_1: Int, score_2: Int ): CreateGameResponse {
+        return badmintonDBServices.update_game(UpdateGameRequest(gamecode,gamestatus, information, score_1,score_2))
+    }
 
-        return GameData(game= game,set1 = set1, set2 = set2, set3 = null, user1 = user1, user2 = null)
+    suspend fun join_game(gameCode: String): CreateGameResponse{
+        return badmintonDBServices.join_game(JoinGameRequest(email = BadmintonContainer.EMAIL, gamecode = gameCode))
+    }
+
+    suspend fun get_game_datas(gameCode: String): CreateGameResponse{
+        return badmintonDBServices.get_game_datas(JoinGameRequest(email = BadmintonContainer.EMAIL, gamecode = gameCode))
     }
 }

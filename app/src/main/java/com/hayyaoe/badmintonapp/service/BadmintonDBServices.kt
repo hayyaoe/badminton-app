@@ -1,16 +1,24 @@
 package com.hayyaoe.badmintonapp.service
 
 import com.hayyaoe.badmintonapp.model.APIResponse
+import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResult
 import com.hayyaoe.badmintonapp.model.Game
+import com.hayyaoe.badmintonapp.model.Games
 import com.hayyaoe.badmintonapp.model.GetSets
 import com.hayyaoe.badmintonapp.model.GetUser
+import com.hayyaoe.badmintonapp.model.History
+import com.hayyaoe.badmintonapp.model.HistoryResponse
+import com.hayyaoe.badmintonapp.model.JoinGameRequest
 import com.hayyaoe.badmintonapp.model.Locations
 import com.hayyaoe.badmintonapp.model.LoginRequest
 import com.hayyaoe.badmintonapp.model.OtherUser
 import com.hayyaoe.badmintonapp.model.OtherUserData
+import com.hayyaoe.badmintonapp.model.Set
 import com.hayyaoe.badmintonapp.model.Sets
+import com.hayyaoe.badmintonapp.model.UpdateGameRequest
 import com.hayyaoe.badmintonapp.model.UpdateProfilePict
+import com.hayyaoe.badmintonapp.model.UpdateSetRequest
 import com.hayyaoe.badmintonapp.model.UpdateUser
 import com.hayyaoe.badmintonapp.model.User
 import com.hayyaoe.badmintonapp.model.UserData
@@ -57,7 +65,7 @@ interface BadmintonDBServices {
     suspend fun update_profile_picture(@Body data: UpdateProfilePict)
 
     @POST("create_game")
-    suspend fun create_game(@Body email: GetUser): CreateGameResult
+    suspend fun create_game(@Body email: GetUser): CreateGameResponse
 
     @POST("get_sets")
     suspend fun get_sets(@Body set: GetSets): Sets
@@ -67,4 +75,22 @@ interface BadmintonDBServices {
 
     @POST("get_user_in_a_game")
     suspend fun get_user_in_a_game(@Body game: GetSets): UserGames
+
+    @POST("get_user_games")
+    suspend fun getUserGames(@Body email: GetUser): HistoryResponse
+
+    @POST("create_set")
+    suspend fun create_set(@Body game_id : GetSets) : Set
+
+    @PATCH("update_set")
+    suspend fun update_set(@Body newData: UpdateSetRequest): Set
+
+    @PATCH("update_game")
+    suspend fun update_game(@Body newData: UpdateGameRequest): CreateGameResponse
+
+    @POST("join_game")
+    suspend fun join_game(@Body gameData: JoinGameRequest) : CreateGameResponse
+
+    @POST("get_game_datas")
+    suspend fun get_game_datas(@Body gameData: JoinGameRequest): CreateGameResponse
 }

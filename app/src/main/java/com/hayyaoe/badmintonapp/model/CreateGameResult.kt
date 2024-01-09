@@ -22,8 +22,8 @@ data class GameData(
 
 data class Game(
     val id: Int,
-    val score_1: Int,
-    val score_2: Int,
+    var score_1: Int,
+    var score_2: Int,
     val created_at: String,
     val updated_at: String,
     val information: String,
@@ -32,8 +32,8 @@ data class Game(
 )
 
 data class Set(
-    val player1_score: Int,
-    val player2_score: Int,
+    var player1_score: Int,
+    var player2_score: Int,
     val created_at: String,
     val updated_at: String,
     val id: Int,
@@ -52,10 +52,31 @@ data class UserGames(
     val data: List<UserGame>
 )
 
+data class History(
+    val userGames : List<Data>
+)
+
+data class Data(
+    val id: Int,
+    val created_at: String,
+    val updated_at: String,
+    val user_id: Int,
+    val game_id: Int,
+    val game: Game,
+    val user: UserData
+)
+
 data class UserGame(
     val id: Int,
     val created_at: String,
     val updated_at: String,
     val user_id: Int,
-    val game_id: Int
+    val game_id: Int,
+)
+
+
+data class Games(
+    val data :List<Game>,
+    val data2 :List<UserData>,
+    val userGames: List<UserGame>
 )

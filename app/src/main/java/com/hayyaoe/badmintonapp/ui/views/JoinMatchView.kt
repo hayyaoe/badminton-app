@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.data.DataStoreManager
 import com.hayyaoe.badmintonapp.navController
 import com.hayyaoe.badmintonapp.ui.views.auth.CustomButton
 import com.hayyaoe.badmintonapp.ui.views.auth.CustomTextBox
@@ -42,7 +44,8 @@ import com.hayyaoe.badmintonapp.viewmodel.home.JoinMatchViewModel
 @Composable
 fun JoinMatchView(
     joinMatchViewModel: JoinMatchViewModel,
-    navController: NavController
+    navController: NavController,
+    dataStore: DataStoreManager
 ) {
     var matchCode by rememberSaveable { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -62,7 +65,7 @@ fun JoinMatchView(
             fontFamily = poppins
         )
         Image(
-            painter = painterResource(id = R.drawable.placeholder),
+            painter = painterResource(id = R.drawable.mask_group),
             contentDescription = "Picture",
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
@@ -79,9 +82,10 @@ fun JoinMatchView(
             onClick = {
                 isLoading = true
                 showLoadingDialog = true
+                joinMatchViewModel.joinMatch(matchCode, navController, dataStore)
             },
             content = "JOIN MATCH",
-            isEnabled = matchCode.isBlank(),
+            isEnabled = matchCode.isNotBlank(),
             modifier = Modifier.padding(horizontal = 26.dp, vertical = 20.dp)
         )
     }
@@ -119,5 +123,5 @@ fun LoadingDialog() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun JoinMatchPreview(){
-    JoinMatchView(viewModel(), navController())
+    JoinMatchView(viewModel(), navController(), DataStoreManager(LocalContext.current))
 }
