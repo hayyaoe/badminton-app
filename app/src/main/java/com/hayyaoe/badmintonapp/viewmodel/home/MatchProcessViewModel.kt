@@ -60,21 +60,38 @@ class MatchProcessViewModel : ViewModel(){
         }
     }
 
+    fun DeclineGame (){
+        viewModelScope.launch {
+            val game = BadmintonContainer().badmintonRepositories.get_game_datas(BadmintonContainer.GAMECODE)
+            val gameResponse = BadmintonContainer().badmintonRepositories.update_game(game.gamecode, gamestatus = 0,game.information,game.score_1,game.score_2)
+            val response = BadmintonContainer().badmintonRepositories.get_game_datas(BadmintonContainer.GAMECODE)
+            Log.d("CHECK DECLINE GAME", gameResponse.toString())
+            matchProcessUiState = MatchProcessUiState.Success( player, response)
+
+        }
+    }
+
     fun isGameConfirmed (): Boolean{
         var confirm = false
         viewModelScope.launch {
             val gameData = BadmintonContainer().badmintonRepositories.get_game_datas(BadmintonContainer.GAMECODE)
             Log.d("IS GAME DATA SENT", gameData.toString())
             if (gameData.gamestatus == 1){
+                Log.d("MASUK SINI", gameData.toString())
                 player = gameData.players?.get(0) ?: Player("",0,"opponent")
                 games = gameData
                 matchProcessUiState = MatchProcessUiState.Success( player, games)
             }
-        }
 
+
+        }
+        Log.d("SHOW DIALOG", confirm.toString())
+        Log.d("GAME STATUS", games.gamestatus.toString())
         if (games.gamestatus == 1){
             confirm = true
         }
+        Log.d("SHOW DIALOG AFTER", confirm.toString())
+
         return confirm
 
     }

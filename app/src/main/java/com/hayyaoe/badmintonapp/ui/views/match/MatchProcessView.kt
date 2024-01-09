@@ -67,9 +67,11 @@ fun MatchProcessView(
                     game = game,
                     onClick1 = {
                         showDialog = false
+                        matchProcessViewModel.ConfirmGame(navController)
                     },
                     onClick2 = {
                         showDialog = false
+                        matchProcessViewModel.DeclineGame()
                     },
                     matchProcessViewModel = matchProcessViewModel
                 )
