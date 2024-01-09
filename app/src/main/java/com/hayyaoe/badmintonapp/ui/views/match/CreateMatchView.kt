@@ -87,11 +87,23 @@ fun CreateMatchView(
                         item {
                             player.photo?.let { it1 ->
                                 if (opponent != null) {
-                                    opponent.photo?.let { it2 ->
+                                    if (opponent.photo != null){
                                         HistoryCard(
                                             date = createMatchViewModel.formatDate(game.created_at),
                                             playerPict = it1,
-                                            opponentPict = it2,
+                                            opponentPict = opponent.photo,
+                                            player = player.username,
+                                            opponent = opponent.username,
+                                            details = game.gamecode,
+                                            yourScore = game.score_1,
+                                            opponentScore = game.score_2,
+                                            context = context
+                                        )
+                                    }else{
+                                        HistoryCard(
+                                            date = createMatchViewModel.formatDate(game.created_at),
+                                            playerPict = it1,
+                                            opponentPict = "",
                                             player = player.username,
                                             opponent = opponent.username,
                                             details = game.gamecode,
@@ -129,11 +141,21 @@ fun CreateMatchView(
                             index++  // Increment the index for the next iteration
                         }
                         item {
-                            CustomButton(onClick = { createMatchViewModel.createSet(game.id) }, content = "Add Set", isEnabled = sets.size <3 )
+                            CustomButton(onClick = { createMatchViewModel.createSet(game.id) }, content = "Add Set", isEnabled = (
+                                    ((game.score_1 == 1 && game.score_2 == 1) && sets.size == 2) ||
+                                            ((game.score_1 == 0 && game.score_2 == 0) && sets.size == 0) ||
+                                            ((game.score_1 == 1 || game.score_2 == 1) && sets.size == 1)
+                                    ),modifier = Modifier.padding(vertical = 10.dp))
                         }
 
                         item{
-                            CustomButton(onClick = { for (set in sets) createMatchViewModel.updateSet(set.id, game.score_1.toString() , game.score_2.toString(), sets) }, content = "Confirm Match", isEnabled = sets.size <3 && sets.size >=2 && game.score_1 > 1 && game.score_2> 1 && opponent != null)
+                            CustomButton(onClick = {
+                                createMatchViewModel.ConfirmGame()
+                                                   }, content = "Confirm Match", isEnabled = ((game.score_1 == 2 || game.score_2 ==2 ) && game.gamestatus == 0) && opponent != null , modifier = Modifier.padding(bottom = 10.dp))
+                        }
+
+                        item{
+                            CustomButton(onClick = {  createMatchViewModel.isGameConfirmed(navController) }, content = "Continue To Comments", isEnabled = game.gamestatus == 1, modifier = Modifier.padding(bottom = 10.dp))
                         }
 
                     }
@@ -180,6 +202,13 @@ fun CreateMatchPreview() {
 //            ){
 //
 //            }
+//            CreateMatchView(
+//                game = ,
+//                player = ,
+//                opponent = ,
+//                navController = ,
+//                createMatchViewModel =
+//            )
         }
     }
 }

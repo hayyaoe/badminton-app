@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.hayyaoe.badmintonapp.model.Game
+import com.hayyaoe.badmintonapp.model.GetGameData
 import com.hayyaoe.badmintonapp.model.Player
 import com.hayyaoe.badmintonapp.navController
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
@@ -44,6 +47,7 @@ fun MatchProcessView(
     navController: NavController,
     userData: Player,
     matchProcessViewModel: MatchProcessViewModel,
+    game: GetGameData,
 ){
     val context = LocalContext.current
 
@@ -60,10 +64,15 @@ fun MatchProcessView(
                     }
             )
             ScorePopUp(
-                onClick = {
-                    showDialog = false
-                }
-            )
+                    game = game,
+                    onClick1 = {
+                        showDialog = false
+                    },
+                    onClick2 = {
+                        showDialog = false
+                    },
+                    matchProcessViewModel = matchProcessViewModel
+                )
         }
     }
 
@@ -95,7 +104,7 @@ fun MatchProcessView(
                             PlayerCard(userData,context)
                         }
                         item {
-                            CustomButton(onClick = { /*TODO*/ }, content = "Finish Match", modifier = Modifier.padding(top = 30.dp),true)
+                            CustomButton(onClick = { showDialog = matchProcessViewModel.isGameConfirmed() }, content = "Confirm Match", modifier = Modifier.padding(top = 30.dp),true)
                         }
                     }
                 }
@@ -132,7 +141,7 @@ private fun matchProcessPreview(){
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            MatchProcessView(navController(),  Player("", 1,"BUDI"),viewModel())
+//            MatchProcessView(navController(),  Player("", 1,"BUDI"),viewModel())
         }
     }
 }

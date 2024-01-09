@@ -5,6 +5,7 @@ import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResult
 import com.hayyaoe.badmintonapp.model.Game
 import com.hayyaoe.badmintonapp.model.Games
+import com.hayyaoe.badmintonapp.model.GetGameData
 import com.hayyaoe.badmintonapp.model.GetSets
 import com.hayyaoe.badmintonapp.model.GetUser
 import com.hayyaoe.badmintonapp.model.History
@@ -92,5 +93,5 @@ interface BadmintonDBServices {
     suspend fun join_game(@Body gameData: JoinGameRequest) : CreateGameResponse
 
     @POST("get_game_datas")
-    suspend fun get_game_datas(@Body gameData: JoinGameRequest): CreateGameResponse
+    suspend fun get_game_datas(@Body gameData: JoinGameRequest): GetGameData
 }

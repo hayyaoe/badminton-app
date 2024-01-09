@@ -6,7 +6,7 @@ data class GetGameData(
     val gamecode: String,
     val gamestatus: Int,
     val information: String,
-    val players: List<PlayerX>,
+    val players: List<Player>,
     val score_1: Int,
     val score_2: Int,
     val sets: List<Set>,
