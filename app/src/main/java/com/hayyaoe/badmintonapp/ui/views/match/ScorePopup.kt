@@ -2,6 +2,7 @@ package com.hayyaoe.badmintonapp.ui.views.match
 
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.view.RoundedCorner
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -54,26 +55,27 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.model.CreateGameResponse
+import com.hayyaoe.badmintonapp.model.Game
+import com.hayyaoe.badmintonapp.model.GetGameData
 import com.hayyaoe.badmintonapp.repository.BadmintonContainer
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.auth.CustomButton
 import com.hayyaoe.badmintonapp.ui.views.auth.poppins
+import com.hayyaoe.badmintonapp.viewmodel.home.MatchProcessViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScorePopUp(
-    score1 : Int = 0,
-    score2 : Int = 0,
-    isWon1 : Boolean  = false,
-    isWon2 : Boolean  = false,
-    player1_name : String = "Bob Hee",
-    player2_name : String = "Pak Evan",
-    onClick : ()-> Unit,
+    onClick1 : ()-> Unit,
+    onClick2 : ()-> Unit,
+    game: GetGameData,
+    matchProcessViewModel: MatchProcessViewModel,
     context: Context = LocalContext.current
 ){
 
     Card (
-        onClick = onClick,
+        onClick = {},
         colors = CardDefaults.cardColors(containerColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.White)
     ) {
         Column (
@@ -86,17 +88,6 @@ fun ScorePopUp(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ){
-                IconButton(
-                    onClick = { /*TODO*/ },
-                ) {
-                    Icon(Icons.Filled.Close, "Close Icon",
-                        modifier = Modifier
-                            .background(Color(0xFF5DA119), CircleShape)
-                            .padding(6.dp),
-                        tint = if (isSystemInDarkTheme()) Color.DarkGray else Color.White
-                    )
-                }
-
                 Text(
                     text = "Match Score",
                     fontFamily = poppins,
@@ -107,8 +98,7 @@ fun ScorePopUp(
                         .weight(2f),
                     textAlign = TextAlign.Center
                 )
-                Text(text = "       ")
-                
+
             }
 
             Box (
@@ -120,20 +110,42 @@ fun ScorePopUp(
                     modifier = Modifier.fillMaxWidth()
                 ){
 
-                    UserProfile(drawable = "/images/1704426687.jpg", player1_name, context)
-                    UserProfile(drawable = "/images/1704426687.jpg", player2_name, context)
+                    if (game.players!= null){
+                        game.players[0].photo?.let { UserProfile(drawable = it, game.players[0].username, context, Modifier.size(110.dp), fontSize = 20.sp) }
+                        game.players[1].photo?.let { UserProfile(drawable = it, game.players[1].username, context, Modifier.size(110.dp), fontSize = 20.sp) }
+                    }
+
                 }
 
-                ScoreBoard(score1, score2, isWon1, isWon2, Modifier.offset(y= (-20).dp))
+                ScoreBoard(game.score_1, game.score_2, matchProcessViewModel.isWon(game.score_1, game.score_2), matchProcessViewModel.isWon(game.score_2, game.score_1), Modifier.offset(y= (-20).dp))
 
             }
+            Log.d("SET DATA", game.sets.toString())
+            Set(
+                setNumber= 1,
+                score1 = game.sets.get(0).player1_score,
+                score2 = game.sets.get(0).player2_score,
+                isWon1 = matchProcessViewModel.isWon(game.sets.get(0).player1_score,game.sets.get(0).player2_score),
+                isWon2 = matchProcessViewModel.isWon(game.sets.get(0).player2_score,game.sets.get(0).player1_score )
+            )
+            Set(
+                setNumber= 2,
+                score1 = game.sets.get(1).player1_score,
+                score2 = game.sets.get(1).player2_score,
+                isWon1 = matchProcessViewModel.isWon(game.sets.get(1).player1_score,game.sets.get(1).player2_score),
+                isWon2 = matchProcessViewModel.isWon(game.sets.get(1).player2_score,game.sets.get(1).player1_score ))
+            if (game.sets.size==3){
+                Set(
+                    setNumber= 3,
+                    score1 = game.sets.get(2).player1_score,
+                    score2 = game.sets.get(2).player2_score,
+                    isWon1 = matchProcessViewModel.isWon(game.sets.get(2).player1_score,game.sets.get(2).player2_score),
+                    isWon2 = matchProcessViewModel.isWon(game.sets.get(2).player2_score,game.sets.get(2).player1_score ))
+            }
 
-            Set(setNumber= 1)
-            Set(setNumber= 2)
-            Set(setNumber= 3)
 
-            Buttons(onClick = { /*TODO*/ }, content = "Accept", colors = ButtonDefaults.buttonColors(Color(0xFF5DA119), Color(0xFFF9F9F9)), modifier = Modifier.padding(top = 20.dp,bottom= 10.dp))
-            Buttons(onClick = { /*TODO*/ }, content = "Decline", colors = ButtonDefaults.buttonColors(Color(0xFFCE392E), Color(0xFFF9F9F9)) )
+                    Buttons(onClick = onClick1, content = "Accept", colors = ButtonDefaults.buttonColors(Color(0xFF5DA119), Color(0xFFF9F9F9)), modifier = Modifier.padding(top = 20.dp,bottom= 10.dp))
+            Buttons(onClick = onClick2, content = "Decline", colors = ButtonDefaults.buttonColors(Color(0xFFCE392E), Color(0xFFF9F9F9)) )
 
 
         }
@@ -240,10 +252,13 @@ fun UserProfile(
 fun ScoreBoard(
     score1 : Int = 0,
     score2 : Int = 0,
-    isWon1 : Boolean  = false,
-    isWon2 : Boolean  = false,
+    isWon1: Boolean,
+    isWon2: Boolean,
     modifier: Modifier = Modifier
 ){
+
+
+
     Card (
         elevation = CardDefaults.elevatedCardElevation(8.dp),
         modifier = modifier
@@ -305,7 +320,7 @@ private fun ScorePopUpPreview(){
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-//            ScorePopUp(2,1,true,false, onClick = {})
+//            ScorePopUp( onClick1 = {}, onClick2={})
         }
     }
 }

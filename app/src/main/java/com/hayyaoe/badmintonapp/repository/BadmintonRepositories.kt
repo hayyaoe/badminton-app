@@ -7,6 +7,7 @@ import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResult
 import com.hayyaoe.badmintonapp.model.GameData
 import com.hayyaoe.badmintonapp.model.Games
+import com.hayyaoe.badmintonapp.model.GetGameData
 import com.hayyaoe.badmintonapp.model.GetSets
 import com.hayyaoe.badmintonapp.model.GetUser
 import com.hayyaoe.badmintonapp.model.History
@@ -128,6 +129,7 @@ class BadmintonRepositories(private val badmintonDBServices: BadmintonDBServices
     }
 
     suspend fun update_game(gamecode: String, gamestatus: Int, information: String, score_1: Int, score_2: Int ): CreateGameResponse {
+        Log.d("GAME STATUS REQUEST", "$gamestatus")
         return badmintonDBServices.update_game(UpdateGameRequest(gamecode,gamestatus, information, score_1,score_2))
     }
 
@@ -135,7 +137,7 @@ class BadmintonRepositories(private val badmintonDBServices: BadmintonDBServices
         return badmintonDBServices.join_game(JoinGameRequest(email = BadmintonContainer.EMAIL, gamecode = gameCode))
     }
 
-    suspend fun get_game_datas(gameCode: String): CreateGameResponse{
+    suspend fun get_game_datas(gameCode: String): GetGameData{
         return badmintonDBServices.get_game_datas(JoinGameRequest(email = BadmintonContainer.EMAIL, gamecode = gameCode))
     }
 }

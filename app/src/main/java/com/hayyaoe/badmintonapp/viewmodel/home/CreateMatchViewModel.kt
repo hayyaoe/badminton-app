@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.Game
 import com.hayyaoe.badmintonapp.model.GameData
@@ -15,6 +16,7 @@ import com.hayyaoe.badmintonapp.model.Scores
 import com.hayyaoe.badmintonapp.model.Set
 import com.hayyaoe.badmintonapp.model.UserData
 import com.hayyaoe.badmintonapp.repository.BadmintonContainer
+import com.hayyaoe.badmintonapp.ui.ListScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,6 +88,7 @@ class CreateMatchViewModel : ViewModel(){
                 val updatedValue = BadmintonContainer().badmintonRepositories.update_set(set_id,score_1.toInt(),score_2.toInt())
                 Log.d("UPDATED VALUE", updatedValue.toString())
                 for ((index, set) in oldValue.withIndex()){
+                    Log.d("SET DEBUG UPDATE", updatedValue.toString())
                     if (set.id == set_id){
                         oldValue[index] = updatedValue
                     }
@@ -116,8 +119,51 @@ class CreateMatchViewModel : ViewModel(){
                 createMatchUiState = CreateMatchUiState.Success(game, player, opponent)
             }
         }
-
     }
+
+    fun ConfirmGame (){
+        viewModelScope.launch {
+            val gameData = BadmintonContainer().badmintonRepositories.update_game(game.gamecode, gamestatus = 1,game.information,game.score_1,game.score_2)
+            Log.d("CHECK CONFIRM GAME", gameData.toString())
+            game = Game(
+                id = gameData.game_id,
+                score_1 = gameData.score_1,
+                score_2 = gameData.score_2,
+                created_at = gameData.created_at,
+                updated_at= gameData.updated_at,
+                information = gameData.information,
+                gamecode = gameData.gamecode,
+                gamestatus = gameData.gamestatus
+            )
+            createMatchUiState = CreateMatchUiState.Success(game, player, opponent)
+        }
+    }
+
+    fun isGameConfirmed (navController: NavController){
+        viewModelScope.launch {
+            val gameData = BadmintonContainer().badmintonRepositories.get_game_datas(game.gamecode)
+            Log.d("IS GAME CONFIRMED DATA", gameData.toString())
+            if (gameData.gamestatus == 2){
+                navController.navigate(ListScreen.CommentView.name){
+                    popUpTo(ListScreen.CreateMatchView.name)
+                }
+            }else{
+                game = Game(
+                    id = gameData.game_id,
+                    score_1 = gameData.score_1,
+                    score_2 = gameData.score_2,
+                    created_at = gameData.created_at,
+                    updated_at= gameData.updated_at,
+                    information = gameData.information,
+                    gamecode = gameData.gamecode,
+                    gamestatus = gameData.gamestatus
+                )
+                createMatchUiState = CreateMatchUiState.Success(game, player, opponent)
+            }
+
+        }
+    }
+
 
     fun getScore(sets: List<Set>): Scores {
         val scores = Scores()
@@ -130,57 +176,4 @@ class CreateMatchViewModel : ViewModel(){
         }
         return scores
     }
-
-//    fun addScore(set1score1: String, set1score2: String, set2score1: String, set2score2: String, set3score1: String?,set3score2: String?){
-//        Log.d("ADD SCORE TRIGGERED", "SUCCESS")
-//        val currentData = _uiState.value
-//        if (set1score1.isNotBlank() && set1score2.isNotBlank()){
-//            if (set1score1.toInt() > set1score2.toInt()){
-//                game.score_1 +=1
-//                set1.player1_score = set1score1.toInt()
-//                set1.player2_score = set1score2.toInt()
-//            }else{
-//                game.score_2 +=1
-//                set1.player1_score = set1score1.toInt()
-//                set1.player2_score = set1score2.toInt()
-//            }
-//        }
-//
-//        if (set2score1.isNotBlank() && set2score2.isNotBlank()){
-//            if (set2score1.toInt() > set2score2.toInt()){
-//                game.score_1 +=1
-//                set2.player1_score = set2score1.toInt()
-//                set2.player2_score = set2score2.toInt()
-//            }else{
-//                game.score_2 +=1
-//                set2.player1_score = set2score1.toInt()
-//                set2.player2_score = set2score2.toInt()
-//            }
-//        }
-//
-//        if (!set3score1.isNullOrBlank() && !set3score2.isNullOrBlank() && set3 != null) {
-//            if (set3score1.toInt() > set3score2.toInt()){
-//                game.score_1 +=1
-//                set3!!.player1_score = set3score1.toInt()
-//                set3!!.player2_score = set3score2.toInt()
-//            }else{
-//                game.score_2 +=1
-//                set3!!.player1_score = set3score1.toInt()
-//                set3!!.player2_score = set3score2.toInt()
-//            }
-//        }
-//
-//        val newUiState = CreateMatchUiState.Success(
-//            game,
-//            set1,
-//            set2,
-//            set3,
-//            user1,
-//            user2
-//        )
-
-//    }
-
-
-
 }

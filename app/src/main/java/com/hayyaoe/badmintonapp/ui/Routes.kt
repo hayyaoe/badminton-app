@@ -285,9 +285,13 @@ fun BadmintonAppRoute() {
                         is MatchProcessUiState.Loading->{}
                         is MatchProcessUiState.Error->{}
                         is MatchProcessUiState.Success->{
-                            MatchProcessView(navController, status.userData, matchProcessViewModel)
+                            MatchProcessView(navController, status.userData, matchProcessViewModel, status.game)
                         }
                     }
+                }
+
+                composable(ListScreen.CommentView.name){
+
                 }
             }
         }
