@@ -26,6 +26,7 @@ import com.hayyaoe.badmintonapp.ui.views.auth.LoginView
 import com.hayyaoe.badmintonapp.ui.views.auth.RegisterView
 import com.hayyaoe.badmintonapp.ui.views.auth.UserDetailsView
 import com.hayyaoe.badmintonapp.ui.views.find.FindSpartnerView
+import com.hayyaoe.badmintonapp.ui.views.match.CommentView
 import com.hayyaoe.badmintonapp.ui.views.match.CreateMatchView
 import com.hayyaoe.badmintonapp.ui.views.match.MatchProcessView
 import com.hayyaoe.badmintonapp.viewmodel.home.HomeViewModel
@@ -35,6 +36,8 @@ import com.hayyaoe.badmintonapp.viewmodel.auth.RegisterUiState
 import com.hayyaoe.badmintonapp.viewmodel.auth.RegisterViewModel
 import com.hayyaoe.badmintonapp.viewmodel.auth.UserDetailUiState
 import com.hayyaoe.badmintonapp.viewmodel.auth.UserDetailViewModel
+import com.hayyaoe.badmintonapp.viewmodel.home.CommentUiState
+import com.hayyaoe.badmintonapp.viewmodel.home.CommentViewModel
 import com.hayyaoe.badmintonapp.viewmodel.home.CreateMatchUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.CreateMatchViewModel
 import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerUiState
@@ -291,7 +294,15 @@ fun BadmintonAppRoute() {
                 }
 
                 composable(ListScreen.CommentView.name){
+                    val commentViewModel : CommentViewModel = viewModel()
 
+                    when(val status = commentViewModel.commentUiState){
+                        is CommentUiState.Loading->{}
+                        is CommentUiState.Error->{}
+                        is CommentUiState.Success->{
+                            CommentView()
+                        }
+                    }
                 }
             }
         }
