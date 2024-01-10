@@ -245,7 +245,8 @@ fun BadmintonAppRoute() {
                             player = status.player,
                             opponent = status.opponent,
                             navController = navController,
-                            createMatchViewModel = createMatchViewModel
+                            createMatchViewModel = createMatchViewModel,
+                            dataStore = dataStore
                         )
                     }
                 }
@@ -300,7 +301,7 @@ fun BadmintonAppRoute() {
                         is CommentUiState.Loading->{}
                         is CommentUiState.Error->{}
                         is CommentUiState.Success->{
-                            CommentView()
+                            CommentView(navController = navController, commentViewModel = commentViewModel, opponent = status.opponent, game = status.game, players = status.opponent)
                         }
                     }
                 }

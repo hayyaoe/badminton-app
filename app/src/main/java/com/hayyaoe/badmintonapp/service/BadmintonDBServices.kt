@@ -3,10 +3,13 @@ package com.hayyaoe.badmintonapp.service
 import com.hayyaoe.badmintonapp.model.APIResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResult
+import com.hayyaoe.badmintonapp.model.CreateReviewRequest
+import com.hayyaoe.badmintonapp.model.CreateSpartnerRequest
 import com.hayyaoe.badmintonapp.model.Game
 import com.hayyaoe.badmintonapp.model.Games
 import com.hayyaoe.badmintonapp.model.GetGameData
 import com.hayyaoe.badmintonapp.model.GetSets
+import com.hayyaoe.badmintonapp.model.GetSpartnerRequests
 import com.hayyaoe.badmintonapp.model.GetUser
 import com.hayyaoe.badmintonapp.model.History
 import com.hayyaoe.badmintonapp.model.HistoryResponse
@@ -20,6 +23,7 @@ import com.hayyaoe.badmintonapp.model.Sets
 import com.hayyaoe.badmintonapp.model.UpdateGameRequest
 import com.hayyaoe.badmintonapp.model.UpdateProfilePict
 import com.hayyaoe.badmintonapp.model.UpdateSetRequest
+import com.hayyaoe.badmintonapp.model.UpdateSpartnerResponse
 import com.hayyaoe.badmintonapp.model.UpdateUser
 import com.hayyaoe.badmintonapp.model.User
 import com.hayyaoe.badmintonapp.model.UserData
@@ -94,4 +98,16 @@ interface BadmintonDBServices {
 
     @POST("get_game_datas")
     suspend fun get_game_datas(@Body gameData: JoinGameRequest): GetGameData
+
+    @POST("create_review")
+    suspend fun create_review(@Body dataComment: CreateReviewRequest) : APIResponse
+
+    @POST("get_spartner_requests")
+    suspend fun get_spartner_requests(@Body user: GetUser):GetSpartnerRequests
+
+    @POST("create_spartner")
+    suspend fun create_spartner(@Body data: CreateSpartnerRequest):APIResponse
+
+    @POST ("update_spartner")
+    suspend fun update_spartner(@Body user: GetUser):UpdateSpartnerResponse
 }

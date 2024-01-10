@@ -33,15 +33,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.hayyaoe.badmintonapp.getResId
 import com.hayyaoe.badmintonapp.model.OtherUser
 import com.hayyaoe.badmintonapp.model.People
+import com.hayyaoe.badmintonapp.repository.BadmintonContainer
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerViewModel
 
@@ -60,6 +64,7 @@ fun CardFindView(
     findSpartnerViewModel: FindSpartnerViewModel
 ){
 
+    val context = LocalContext.current
     val loc = findSpartnerViewModel.getLocationById(_location)
     val profilePicture: Int = getResId(_profilePicture)
     val name: String = _name
@@ -108,8 +113,8 @@ fun CardFindView(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Image(
-                    painter = painterResource(id = profilePicture),
+                AsyncImage(
+                    model = ImageRequest.Builder(context).data(BadmintonContainer.API_URL+_profilePicture ).crossfade(true).build(),
                     contentDescription = "profile picture",
                     modifier = Modifier
                         .width(128.dp)

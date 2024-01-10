@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.hayyaoe.badmintonapp.data.DataStoreManager
 import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.Game
 import com.hayyaoe.badmintonapp.model.GameData
@@ -65,6 +66,8 @@ class CreateMatchViewModel : ViewModel(){
                 gamecode = gameData.gamecode,
                 gamestatus = gameData.gamestatus
             )
+
+
             player = gameData.players?.get(0) ?: Player("",0,"user")
 
             createMatchUiState = CreateMatchUiState.Success(game, player, opponent)
@@ -77,10 +80,11 @@ class CreateMatchViewModel : ViewModel(){
             val oldvalue = _setState.value
             val newset = BadmintonContainer().badmintonRepositories.create_set(game_id)
             _setState.value = oldvalue+ newset
+
         }
     }
 
-    fun updateSet(set_id: Int, score_1: String, score_2: String, sets: List<Set>){
+    fun updateSet(set_id: Int, score_1: String, score_2: String, sets: List<Set>, dataStore:DataStoreManager){
 
         if (score_2.isNotBlank() && score_1.isNotBlank()){
             viewModelScope.launch {
@@ -99,6 +103,7 @@ class CreateMatchViewModel : ViewModel(){
                 Log.d("SCORES AFTER CALCULATED", scores.toString())
                 val gameData = BadmintonContainer().badmintonRepositories.update_game(game.gamecode,game.gamestatus,game.information,scores.score1,scores.score2)
                 Log.d("UPDATED GAME DATA", gameData.toString())
+
                 game = Game(
                     id = gameData.game_id,
                     score_1 = gameData.score_1,
@@ -109,14 +114,20 @@ class CreateMatchViewModel : ViewModel(){
                     gamecode = gameData.gamecode,
                     gamestatus = gameData.gamestatus
                 )
+
                 if (gameData.players != null){
                     if (gameData.players.size > 1){
                         opponent = gameData.players[1]
                     }
                 }
-
-
+                dataStore.saveGameCode(gameData.gamecode)
                 createMatchUiState = CreateMatchUiState.Success(game, player, opponent)
+
+                dataStore.getGameCode.collect{gamecode->
+                    if (gamecode !=null){
+                        BadmintonContainer.GAMECODE = gamecode
+                    }
+                }
             }
         }
     }
