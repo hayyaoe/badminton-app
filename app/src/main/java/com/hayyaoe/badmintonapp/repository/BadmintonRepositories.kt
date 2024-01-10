@@ -12,6 +12,7 @@ import com.hayyaoe.badmintonapp.model.Games
 import com.hayyaoe.badmintonapp.model.GetGameData
 import com.hayyaoe.badmintonapp.model.GetSets
 import com.hayyaoe.badmintonapp.model.GetSpartnerRequests
+import com.hayyaoe.badmintonapp.model.GetSpartnersResponse
 import com.hayyaoe.badmintonapp.model.GetUser
 import com.hayyaoe.badmintonapp.model.History
 import com.hayyaoe.badmintonapp.model.HistoryResponse
@@ -24,6 +25,7 @@ import com.hayyaoe.badmintonapp.model.Set
 import com.hayyaoe.badmintonapp.model.UpdateGameRequest
 import com.hayyaoe.badmintonapp.model.UpdateProfilePict
 import com.hayyaoe.badmintonapp.model.UpdateSetRequest
+import com.hayyaoe.badmintonapp.model.UpdateSpartnerRequest
 import com.hayyaoe.badmintonapp.model.UpdateSpartnerResponse
 import com.hayyaoe.badmintonapp.model.UpdateUser
 import com.hayyaoe.badmintonapp.model.UserData
@@ -159,7 +161,11 @@ class BadmintonRepositories(private val badmintonDBServices: BadmintonDBServices
     }
 
     suspend fun update_spartner(user_id: Int): UpdateSpartnerResponse{
-        return badmintonDBServices.update_spartner(GetUser(user_id = user_id))
+        return badmintonDBServices.update_spartner(UpdateSpartnerRequest(game_id = user_id))
+    }
+
+    suspend fun get_spartners(user_id: Int): GetSpartnersResponse{
+        return badmintonDBServices.get_spartners(GetUser(user_id = user_id))
     }
 
 

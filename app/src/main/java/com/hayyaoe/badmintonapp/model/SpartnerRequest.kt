@@ -7,5 +7,6 @@ data class SpartnerRequest(
     val user1: Int,
     val user1status: Int,
     val user2: Int,
-    val user2status: Int
+    val user2status: Int,
+    val user1data: UserData
 )

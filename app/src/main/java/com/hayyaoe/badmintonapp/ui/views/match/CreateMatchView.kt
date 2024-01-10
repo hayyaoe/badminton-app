@@ -159,7 +159,7 @@ fun CreateMatchView(
                         }
 
                         item{
-                            CustomButton(onClick = {  createMatchViewModel.isGameConfirmed(navController) }, content = "Continue To Comments", isEnabled = game.gamestatus == 1, modifier = Modifier.padding(bottom = 10.dp))
+                            CustomButton(onClick = {  createMatchViewModel.isGameConfirmed(navController) }, content = "Finish Match", isEnabled = game.gamestatus == 1, modifier = Modifier.padding(bottom = 10.dp))
                         }
 
                     }
