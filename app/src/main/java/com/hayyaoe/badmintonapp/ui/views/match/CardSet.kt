@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hayyaoe.badmintonapp.data.DataStoreManager
 import com.hayyaoe.badmintonapp.model.Player
 import com.hayyaoe.badmintonapp.model.Set
 import com.hayyaoe.badmintonapp.model.UserData
@@ -63,13 +64,14 @@ fun CardSetView(
     opponent: Player?,
     sets: List<Set>,
     createMatchViewModel: CreateMatchViewModel,
+    dataStore:DataStoreManager,
 ) {
 
     var score1 by remember {mutableStateOf(setData.player1_score.toString()) }
     var score2 by remember {mutableStateOf(setData.player2_score.toString()) }
 
     Card(
-        onClick = { createMatchViewModel.updateSet(set_id = setData.id, score1,score2, sets)},
+        onClick = { createMatchViewModel.updateSet(set_id = setData.id, score1,score2, sets,dataStore)},
         modifier = Modifier
             .padding(4.dp, 12.dp, 4.dp, 12.dp),
         shape = RoundedCornerShape(15),

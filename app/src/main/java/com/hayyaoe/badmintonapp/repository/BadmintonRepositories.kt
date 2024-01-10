@@ -5,10 +5,13 @@ import android.util.Log
 import com.hayyaoe.badmintonapp.model.APIResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResponse
 import com.hayyaoe.badmintonapp.model.CreateGameResult
+import com.hayyaoe.badmintonapp.model.CreateReviewRequest
+import com.hayyaoe.badmintonapp.model.CreateSpartnerRequest
 import com.hayyaoe.badmintonapp.model.GameData
 import com.hayyaoe.badmintonapp.model.Games
 import com.hayyaoe.badmintonapp.model.GetGameData
 import com.hayyaoe.badmintonapp.model.GetSets
+import com.hayyaoe.badmintonapp.model.GetSpartnerRequests
 import com.hayyaoe.badmintonapp.model.GetUser
 import com.hayyaoe.badmintonapp.model.History
 import com.hayyaoe.badmintonapp.model.HistoryResponse
@@ -21,6 +24,7 @@ import com.hayyaoe.badmintonapp.model.Set
 import com.hayyaoe.badmintonapp.model.UpdateGameRequest
 import com.hayyaoe.badmintonapp.model.UpdateProfilePict
 import com.hayyaoe.badmintonapp.model.UpdateSetRequest
+import com.hayyaoe.badmintonapp.model.UpdateSpartnerResponse
 import com.hayyaoe.badmintonapp.model.UpdateUser
 import com.hayyaoe.badmintonapp.model.UserData
 import com.hayyaoe.badmintonapp.model.UserGames
@@ -42,6 +46,7 @@ class BadmintonRepositories(private val badmintonDBServices: BadmintonDBServices
     }
 
     suspend fun registerUser(user: UserRegistrationRequest): APIResponse {
+        Log.d("REGISTER USER DATA", user.toString())
         return badmintonDBServices.register(user)
     }
 
@@ -140,4 +145,22 @@ class BadmintonRepositories(private val badmintonDBServices: BadmintonDBServices
     suspend fun get_game_datas(gameCode: String): GetGameData{
         return badmintonDBServices.get_game_datas(JoinGameRequest(email = BadmintonContainer.EMAIL, gamecode = gameCode))
     }
+
+    suspend fun create_review(user_id: Int, game_id: Int, review: String): APIResponse{
+        return badmintonDBServices.create_review(CreateReviewRequest(user_id = user_id, game_id = game_id, review = review))
+    }
+
+    suspend fun get_spartner_requests(user_id: Int): GetSpartnerRequests{
+        return badmintonDBServices.get_spartner_requests(GetUser(user_id = user_id))
+    }
+
+    suspend fun create_spartner(user1:Int,user2:Int):APIResponse{
+        return badmintonDBServices.create_spartner(CreateSpartnerRequest(user1 = user1, user2 = user2))
+    }
+
+    suspend fun update_spartner(user_id: Int): UpdateSpartnerResponse{
+        return badmintonDBServices.update_spartner(GetUser(user_id = user_id))
+    }
+
+
 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +45,11 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.model.Player
+import com.hayyaoe.badmintonapp.repository.BadmintonContainer
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.auth.CustomTextBox
 import com.hayyaoe.badmintonapp.ui.views.auth.poppins
@@ -52,8 +57,10 @@ import com.hayyaoe.badmintonapp.ui.views.auth.poppins
 @Composable
 fun CommentCard(
     onValueChange: (String) -> Unit,
-    image: Int
+    opponent: Player,
+    value: String,
 ){
+    val context = LocalContext.current
     Card (
         modifier = Modifier
             .fillMaxWidth()
@@ -64,8 +71,8 @@ fun CommentCard(
     ){
         Column (
         ){
-            Image(
-                painter = painterResource(id = image),
+            AsyncImage(
+                model = ImageRequest.Builder(context).data(BadmintonContainer.API_URL+opponent.photo ).crossfade(true).build(),
                 contentDescription ="Spartner Image",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,7 +95,7 @@ fun CommentCard(
                         color = Color(0xFF5DA119)
                     )
                     Text(
-                        text = "Pak Evan",
+                        text = opponent.username,
                         fontFamily = poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
@@ -105,26 +112,11 @@ fun CommentCard(
                             .background(Color(0xFF5DA119), RoundedCornerShape(5.dp)),
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        Text(
-                            text = "400",
-                            fontFamily = poppins,
-                            fontSize = 12.sp,
-                            color = Color.White,
-                            modifier= Modifier
-                                .padding(top = 2.dp, bottom = 2.dp, start = 6.dp)
-                                .offset(y = 1.dp)
-                        )
-                        Text(
-                            text = "\uD83D\uDD25",
-                            fontSize = 10.sp,
-                            modifier= Modifier
-                                .padding(end = 6.dp)
-                                .offset(y = (-1).dp)
-                        )
+
                     }
                 }
             }
-            LargeTextBox(value = "Comment", onValueChange = onValueChange, label = "Comment their play!" )
+            LargeTextBox(value = value, onValueChange = onValueChange, label = "Comment their play!" )
         }
     }
 }
@@ -201,7 +193,7 @@ private fun CommentPreview(){
         ) {
 
             var comment by rememberSaveable { mutableStateOf("") }
-            CommentCard(image = R.drawable.evan_tanuwijaya__s_kom___m_kom_resize, onValueChange = {comment = it} )
+//            CommentCard( onValueChange = {comment = it}, value = comment,)
         }
     }
 }

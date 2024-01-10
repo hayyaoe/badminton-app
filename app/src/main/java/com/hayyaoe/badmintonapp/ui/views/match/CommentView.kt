@@ -21,18 +21,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import com.hayyaoe.badmintonapp.R
+import com.hayyaoe.badmintonapp.model.GetGameData
+import com.hayyaoe.badmintonapp.model.Player
 import com.hayyaoe.badmintonapp.navController
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.TopBar
 import com.hayyaoe.badmintonapp.ui.views.auth.CustomButton
 import com.hayyaoe.badmintonapp.ui.views.auth.poppins
+import com.hayyaoe.badmintonapp.viewmodel.home.CommentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentView(){
-    val navController = navController()
-    var comment by rememberSaveable { mutableStateOf("") }
+fun CommentView(
+    commentViewModel: CommentViewModel,
+    navController: NavController,
+    opponent: Player,
+    game: GetGameData,
+    players: Player,
+){
+    var comment by rememberSaveable { mutableStateOf("Comment Their Play") }
 
     Box (
         modifier = Modifier
@@ -59,10 +68,10 @@ fun CommentView(){
                             )
                         }
                         item {
-                            CommentCard(image = R.drawable.evan_tanuwijaya__s_kom___m_kom_resize, onValueChange = {comment = it})
+                            CommentCard(opponent = opponent , onValueChange = {comment = it}, value = comment, )
                         }
                         item {
-                            CustomButton(onClick = { /*TODO*/ }, content = "Submit", modifier = Modifier.padding(top = 30.dp), comment.isNotBlank())
+                            CustomButton(onClick = { commentViewModel.postComment(players.user_id, game.game_id, comment = comment, navController) }, content = "Submit", modifier = Modifier.padding(top = 30.dp), comment.isNotBlank())
                         }
                     }
                 }
@@ -90,7 +99,7 @@ private fun CommentPreview(){
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
-            CommentView()
+//            CommentView()
         }
     }
 }

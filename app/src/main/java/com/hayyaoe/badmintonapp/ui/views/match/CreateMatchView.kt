@@ -31,7 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.dataStore
 import androidx.navigation.NavController
+import com.hayyaoe.badmintonapp.data.DataStoreManager
 import com.hayyaoe.badmintonapp.model.Game
 import com.hayyaoe.badmintonapp.model.OtherUser
 import com.hayyaoe.badmintonapp.model.Player
@@ -51,7 +53,8 @@ fun CreateMatchView(
     player: Player,
     opponent: Player?,
     navController: NavController,
-    createMatchViewModel: CreateMatchViewModel
+    createMatchViewModel: CreateMatchViewModel,
+    dataStore: DataStoreManager
 ) {
 
     val sets by createMatchViewModel.setState.collectAsState()
@@ -136,7 +139,8 @@ fun CreateMatchView(
                                 player = player,
                                 opponent= opponent,
                                 createMatchViewModel = createMatchViewModel,
-                                sets = sets
+                                sets = sets,
+                                dataStore = dataStore
                             )
                             index++  // Increment the index for the next iteration
                         }
