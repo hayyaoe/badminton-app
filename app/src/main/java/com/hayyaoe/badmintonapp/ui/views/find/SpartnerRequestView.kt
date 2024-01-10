@@ -1,9 +1,6 @@
 package com.hayyaoe.badmintonapp.ui.views.find
 
 import android.content.res.Configuration
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,47 +28,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import com.google.gson.Gson
 import com.hayyaoe.badmintonapp.model.OtherUser
-import com.hayyaoe.badmintonapp.navController
+import com.hayyaoe.badmintonapp.model.SpartnerRequest
 import com.hayyaoe.badmintonapp.ui.theme.BadmintonAppTheme
 import com.hayyaoe.badmintonapp.ui.views.BottomBar
 import com.hayyaoe.badmintonapp.ui.views.TopBar
-import com.hayyaoe.badmintonapp.model.People
-import com.hayyaoe.badmintonapp.showToast
 import com.hayyaoe.badmintonapp.viewmodel.home.FindSpartnerViewModel
-
-
-class FindMatch : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-
-            var dataPeople by remember { mutableStateOf<List<People>>(emptyList()) }
-            val jsonFile = assets.open("people.json")
-            val jsonString = jsonFile.bufferedReader().use { it.readText() }
-            val peopleList = Gson().fromJson(jsonString, Array<People>::class.java).toList()
-            dataPeople = peopleList
-
-            BadmintonAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-//                    FindSpartnerView(peopleList)
-                }
-            }
-        }
-    }
-}
+import com.hayyaoe.badmintonapp.viewmodel.home.SpartnerRequestViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FindSpartnerView(
-    people: List<OtherUser>,
+fun SpartnerRequestView(
+    people: List<SpartnerRequest>,
     navController: NavController,
-    findSpartnerViewModel: FindSpartnerViewModel
+    spartnerRequestViewModel: SpartnerRequestViewModel
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedData by remember { mutableStateOf<OtherUser?>(null) }
@@ -92,7 +62,7 @@ fun FindSpartnerView(
         ) {
             CardDetailView(
                 _name = data.username,
-                _location = findSpartnerViewModel.getLocationById(data.location_id),
+                _location = spartnerRequestViewModel.getLocationById(data.location_id),
                 _profilePicture = data.profile_path,
                 _phone = data.phone_number,
                 _instagram = data.contacts,
@@ -124,28 +94,28 @@ fun FindSpartnerView(
                     ) {
                         item {
                             Text(
-                                text = "Find \nSpartner",
+                                text = "Spartner \nRequests",
                                 lineHeight = 60.sp,
                                 fontSize = 60.sp,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(20.dp)
+                                modifier = Modifier
                             )
                         }
                         people.forEach {
                             item {
-                                CardFindView(
-                                    _id = it.id,
-                                    _rank = it.rank,
-                                    _profilePicture = it.profile_path,
-                                    _name = it.username,
-                                    _location = it.location_id,
-                                    _phone = it.phone_number,
-                                    _instagram = it.contacts,
+                                CardRequestView(
+                                    _id = it.user1data.id,
+                                    _rank = it.user1data.rank,
+                                    _profilePicture = it.user1data.image_path,
+                                    _name = it.user1data.username,
+                                    _location = 1,
+                                    _phone = "",
+                                    _instagram ="",
                                     onCardClick = {
                                         selectedData = it
                                     },
-                                    findSpartnerViewModel= findSpartnerViewModel,
-                                    iconOnClick = {findSpartnerViewModel.addFriend(it.id)}
+                                    spartnerRequestViewModel= spartnerRequestViewModel,
+                                    iconOnClick = {spartnerRequestViewModel.spartnerUpdate(it.id)}
                                 )
                             }
                         }
@@ -189,7 +159,7 @@ fun FindSpartnerView(
     showSystemUi = true
 )
 @Composable
-fun FindMatchPreview() {
+fun SpartnerRequestPreview() {
 
     BadmintonAppTheme {
         Surface(

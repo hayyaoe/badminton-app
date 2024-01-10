@@ -1,5 +1,6 @@
 package com.hayyaoe.badmintonapp.viewmodel.home
 
+
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,18 +9,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hayyaoe.badmintonapp.model.Location
 import com.hayyaoe.badmintonapp.model.OtherUser
+import com.hayyaoe.badmintonapp.model.SpartnerRequest
 import com.hayyaoe.badmintonapp.repository.BadmintonContainer
 import kotlinx.coroutines.launch
 
-sealed interface FindSpartnerUiState{
-    object Loading: FindSpartnerUiState
-    data class Success(val people: List<OtherUser>): FindSpartnerUiState
-    object Error: FindSpartnerUiState
+sealed interface SpartnerRequestUiState{
+    object Loading: SpartnerRequestUiState
+    data class Success(val people: List<SpartnerRequest>): SpartnerRequestUiState
+    object Error: SpartnerRequestUiState
 }
 
-class FindSpartnerViewModel: ViewModel(){
-    var findSpartnerUiState: FindSpartnerUiState by mutableStateOf(FindSpartnerUiState.Loading)
-    lateinit var people: List<OtherUser>
+class SpartnerRequestViewModel: ViewModel(){
+    var spartnerRequestUiState: SpartnerRequestUiState by mutableStateOf(SpartnerRequestUiState.Loading)
+    lateinit var people: List<SpartnerRequest>
 
     var regions = listOf<Location>()
 
@@ -30,13 +32,15 @@ class FindSpartnerViewModel: ViewModel(){
     private fun loadData(){
         viewModelScope.launch {
             try {
-                people = BadmintonContainer().badmintonRepositories.get_users()
-                findSpartnerUiState = FindSpartnerUiState.Success(people)
+                val user = BadmintonContainer().badmintonRepositories.get_user()
+                val request = BadmintonContainer().badmintonRepositories.get_spartner_requests(user.id)
+                people = request.spartnerRequests
+                spartnerRequestUiState = SpartnerRequestUiState.Success(people)
                 regions = BadmintonContainer().badmintonRepositories.all_locations()
 
             }catch (e: Exception){
                 Log.d("Find Spartner Load Data", e.message.toString())
-                findSpartnerUiState = FindSpartnerUiState.Error
+                spartnerRequestUiState = SpartnerRequestUiState.Error
             }
         }
     }
@@ -57,8 +61,19 @@ class FindSpartnerViewModel: ViewModel(){
             val user = BadmintonContainer().badmintonRepositories.get_user()
             val data = BadmintonContainer().badmintonRepositories.create_spartner(user.id, otherUserId)
             if (data.message == "Spartner Created"){
-                findSpartnerUiState = FindSpartnerUiState.Success(people)
+                spartnerRequestUiState = SpartnerRequestUiState.Success(people)
             }
         }
+    }
+
+    fun spartnerUpdate(game_id: Int){
+        viewModelScope.launch{
+            val user = BadmintonContainer().badmintonRepositories.get_user()
+            BadmintonContainer().badmintonRepositories.update_spartner(game_id)
+            val request = BadmintonContainer().badmintonRepositories.get_spartner_requests(user.id)
+            people = request.spartnerRequests
+            spartnerRequestUiState = SpartnerRequestUiState.Success(people)
+        }
+
     }
 }

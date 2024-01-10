@@ -26,6 +26,8 @@ import com.hayyaoe.badmintonapp.ui.views.auth.LoginView
 import com.hayyaoe.badmintonapp.ui.views.auth.RegisterView
 import com.hayyaoe.badmintonapp.ui.views.auth.UserDetailsView
 import com.hayyaoe.badmintonapp.ui.views.find.FindSpartnerView
+import com.hayyaoe.badmintonapp.ui.views.find.SpartnerRequestView
+import com.hayyaoe.badmintonapp.ui.views.find.SpartnersView
 import com.hayyaoe.badmintonapp.ui.views.match.CommentView
 import com.hayyaoe.badmintonapp.ui.views.match.CreateMatchView
 import com.hayyaoe.badmintonapp.ui.views.match.MatchProcessView
@@ -51,6 +53,10 @@ import com.hayyaoe.badmintonapp.viewmodel.home.MatchProcessUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.MatchProcessViewModel
 import com.hayyaoe.badmintonapp.viewmodel.home.SettingsUiState
 import com.hayyaoe.badmintonapp.viewmodel.home.SettingsViewModel
+import com.hayyaoe.badmintonapp.viewmodel.home.SpartnerRequestUiState
+import com.hayyaoe.badmintonapp.viewmodel.home.SpartnerRequestViewModel
+import com.hayyaoe.badmintonapp.viewmodel.home.SpartnersUiState
+import com.hayyaoe.badmintonapp.viewmodel.home.SpartnersViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -67,6 +73,9 @@ enum class ListScreen{
     CreateMatchView,
     MatchProcessView,
     CommentView,
+    FriendRequestView,
+    FriendsView,
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -302,6 +311,28 @@ fun BadmintonAppRoute() {
                         is CommentUiState.Error->{}
                         is CommentUiState.Success->{
                             CommentView(navController = navController, commentViewModel = commentViewModel, opponent = status.opponent, game = status.game, players = status.opponent)
+                        }
+                    }
+                }
+
+                composable(ListScreen.FriendRequestView.name){
+                    val spartnerRequestViewModel : SpartnerRequestViewModel = viewModel()
+                    when(val status = spartnerRequestViewModel.spartnerRequestUiState){
+                        is SpartnerRequestUiState.Loading->{}
+                        is SpartnerRequestUiState.Error->{}
+                        is SpartnerRequestUiState.Success->{
+                            SpartnerRequestView(navController = navController, people =status.people, spartnerRequestViewModel = spartnerRequestViewModel)
+                        }
+                    }
+                }
+
+                composable(ListScreen.FriendsView.name){
+                    val spartnersViewModel : SpartnersViewModel = viewModel()
+                    when(val status = spartnersViewModel.spartnerUiState){
+                        is SpartnersUiState.Loading->{}
+                        is SpartnersUiState.Error->{}
+                        is SpartnersUiState.Success->{
+                            SpartnersView(navController = navController, people =status.people, spartnerViewModel = spartnersViewModel)
                         }
                     }
                 }
